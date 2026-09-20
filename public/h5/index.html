@@ -1,4 +1,20 @@
-<!DOCTYPE html><html lang=zh-CN><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><link rel="shortcut icon" type=image/x-icon href=https://cdn.uviewui.com/uview/common/favicon.ico><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><title>App</title><style>::-webkit-scrollbar {
+<!DOCTYPE html><html lang=zh-CN><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><link rel=icon type=image/x-icon href=/static/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/static/apple-touch-icon.png><meta name=apple-mobile-web-app-title content=Revlew><meta name=apple-mobile-web-app-capable content=yes><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><title>Revlew</title><script>(function () {
+				var SITE_TITLE = 'Revlew';
+				function lockTitle() {
+					if (document.title !== SITE_TITLE) document.title = SITE_TITLE;
+				}
+				lockTitle();
+				var titleEl = document.querySelector('title');
+				if (titleEl && window.MutationObserver) {
+					new MutationObserver(lockTitle).observe(titleEl, {
+						childList: true,
+						subtree: true,
+						characterData: true
+					});
+				}
+				document.addEventListener('visibilitychange', lockTitle);
+				window.addEventListener('pageshow', lockTitle);
+			})();</script><style>::-webkit-scrollbar {
 				display: none;
 			}
 			
@@ -93,4 +109,4 @@
 					// 未登录，开始倒计时
 					startCountdown();
 				});
-			})();</script><script src=/static/js/chunk-vendors.cf2429ff.js></script><script src=/static/js/index.413e14bd.js></script></body></html>
+			})();</script><script src=/static/js/chunk-vendors.188a9ab9.js></script><script src=/static/js/index.b58080ba.js></script></body></html>

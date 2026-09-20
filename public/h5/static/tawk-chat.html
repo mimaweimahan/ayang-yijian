@@ -1,42 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-<script type='text/javascript'>
-    (function(m, ei, q, i, a, j, s) {
-        m[i] = m[i] || function() {
-            (m[i].a = m[i].a || []).push(arguments)
-        };
-        j = ei.createElement(q),
-            s = ei.getElementsByTagName(q)[0];
-        j.async = true;
-        j.charset = 'UTF-8';
-        j.src = 'https://static.meiqia.com/dist/meiqia.js';
-        s.parentNode.insertBefore(j, s);
-    })(window, document, 'script', '_MEIQIA');
-    _MEIQIA('entId', '3436f048dd243aac1f93c1f562453ddc');
-	 _MEIQIA('language', 'en');
-    // 初始化成功后调用美洽 showPanel
-    _MEIQIA('allSet', function(){
-    _MEIQIA('showPanel');
-    });
-	    document.addEventListener('DOMContentLoaded', () => {
-	      // 1. 解析 URL 参数
-	      const urlParams = new URLSearchParams(window.location.search);
-	      const nickname = urlParams.get('nickname');
-		  const username = urlParams.get('username');
-		  
-		  // 传递顾客信息
-		  _MEIQIA('metadata', {
-		  	name: nickname, // 美洽默认字段
-			tel: username, // 美洽默认字段
-		  });
-	  });
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>客服</title>
+	<script>
+		/**
+		 * 原逻辑：kefu 页 web-view 打开本页并带 ?nickname=&username=
+		 * 现改为跳转 Chat2Y「URL 对接」，参数映射见文档 userName / pid 等。
+		 * 与线上一致：app.chat2y.cfd + channelId=7bca9329828549e9926b63862ceb22a5
+		 */
+		(function () {
+			/* 与 frontend/utils/chat2y.js 中 CHAT2Y_INDEX / CHAT2Y_CHANNEL_ID 保持一致 */
+			var CHAT_BASE = "https://app.dot01ax.cfd/chat/index";
+			var CHANNEL_ID = "7bca9329828549e9926b63862ceb22a5";
 
-</script>
+			var search = window.location.search || "";
+			var urlParams = new URLSearchParams(search);
+			var nickname = urlParams.get("nickname") || "";
+			var username = urlParams.get("username") || "";
 
+			var q = new URLSearchParams();
+			q.set("channelId", CHANNEL_ID);
+			if (nickname) q.set("userName", nickname);
+			if (username) q.set("pid", username);
 
+			window.location.replace(CHAT_BASE + "?" + q.toString());
+		})();
+	</script>
 </head>
-<body>
-</body>
+<body></body>
 </html>
