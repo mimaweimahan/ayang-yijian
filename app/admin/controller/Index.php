@@ -22,7 +22,11 @@ class Index extends Base
         $rules = Session::get("adminInfo.rules");
 		$adminusername = Session::get("adminInfo.username");
 		$aincode = Db::name('admin')->where('username',$adminusername)->find();
-		$bincode = Db::name('user')->where('id',$aincode['user_id'])->find();
+		// 超管 user_id 可能为 0/空：避免对 null 取 invite_code 触发 500
+		$bincode = [];
+		if (!empty($aincode['user_id'])) {
+			$bincode = Db::name('user')->where('id', $aincode['user_id'])->find() ?: [];
+		}
 		// dump($adminusername);die;
         if (!$rules)
             $rules = [];
@@ -32,7 +36,7 @@ class Index extends Base
             'menu' => Config::get('system.admin_menu_list'),
             'admin_id' => Session::get("adminInfo.id"),
             'admin_name' => Session::get("adminInfo.username"),
-			'incode' => $bincode['invite_code'],
+			'incode' => $bincode['invite_code'] ?? '',
             'rule_config' => $rules,
         ]);
         return View::fetch();

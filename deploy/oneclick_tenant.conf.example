@@ -1,7 +1,11 @@
+# 访问模式（bootstrap / oneclick 共用）
+# auto=BASE_DOMAIN 仍为 example.com 时用公网IP:端口；domain=强制租户.域名；ip=强制IP
+# ACCESS_MODE=auto
+
 # 纯 Docker 一键开通配置（与宝塔无关）
 # cp deploy/oneclick_tenant.conf.example deploy/oneclick_tenant.conf
 
-# 租户域名后缀：访问 {租户}.{BASE_DOMAIN}
+# 租户域名后缀：访问 {租户}.{BASE_DOMAIN}（有域名后改这里；可后配）
 BASE_DOMAIN=example.com
 # 设为 1 时禁止使用 example.com / yourdomain.com 占位
 REQUIRE_REAL_DOMAIN=0

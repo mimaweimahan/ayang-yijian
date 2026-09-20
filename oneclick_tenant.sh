@@ -51,6 +51,9 @@ PORT_BASE="${PORT_BASE:-18001}"
 PORT_MAX="${PORT_MAX:-18999}"
 SKIP_DOCKER_BUILD="${SKIP_DOCKER_BUILD:-0}"
 REQUIRE_REAL_DOMAIN="${REQUIRE_REAL_DOMAIN:-0}"
+# 访问模式: auto=占位域名则走公网IP:端口；ip=强制IP；domain=强制租户.域名
+ACCESS_MODE="${ACCESS_MODE:-auto}"
+PUBLIC_IP="${PUBLIC_IP:-}"
 # 对外 URL 协议（入口反代自行终结 TLS 时用 https）
 APP_SCHEME="${APP_SCHEME:-http}"
 
@@ -87,8 +90,6 @@ fi
 
 DB_NAME="${DB_NAME_PREFIX}${TENANT}"
 DB_USER="$DB_NAME"
-DOMAIN="${TENANT}.${BASE_DOMAIN}"
-APP_URL="${APP_SCHEME}://${DOMAIN}"
 CODE_DIR="${TENANTS_ROOT}/${TENANT}"
 INST_DIR="${INSTANCES_ROOT}/${TENANT}"
 COMPOSE_FILE="${INST_DIR}/docker-compose.yml"
@@ -122,12 +123,42 @@ else
   PORT="$(alloc_port)"
 fi
 
+# ---------- 对外访问地址（域名可后配：占位域名 → 公网 IP:端口）----------
+detect_public_ip() {
+  local ip=""
+  ip="$(curl -fsS --max-time 5 ifconfig.me 2>/dev/null || true)"
+  [[ -z "$ip" ]] && ip="$(curl -fsS --max-time 5 icanhazip.com 2>/dev/null || true)"
+  [[ -z "$ip" ]] && ip="$(curl -fsS --max-time 5 ip.sb 2>/dev/null || true)"
+  echo "$ip" | tr -d '[:space:]'
+}
+_use_ip=0
+case "$ACCESS_MODE" in
+  ip) _use_ip=1 ;;
+  domain) _use_ip=0 ;;
+  auto|*)
+    if [[ "$BASE_DOMAIN" == "example.com" || "$BASE_DOMAIN" == "yourdomain.com" || -z "$BASE_DOMAIN" ]]; then
+      _use_ip=1
+    fi
+    ;;
+esac
+if [[ "$_use_ip" -eq 1 ]]; then
+  [[ -n "$PUBLIC_IP" ]] || PUBLIC_IP="$(detect_public_ip)"
+  [[ -n "$PUBLIC_IP" ]] || die "无法探测公网 IP，请手动: PUBLIC_IP=x.x.x.x ACCESS_MODE=ip $0 ..."
+  DOMAIN="${PUBLIC_IP}"
+  APP_URL="${APP_SCHEME}://${PUBLIC_IP}:${PORT}"
+  log "访问模式=IP（域名后配）| APP_URL=$APP_URL"
+else
+  DOMAIN="${TENANT}.${BASE_DOMAIN}"
+  APP_URL="${APP_SCHEME}://${DOMAIN}"
+  log "访问模式=域名 | APP_URL=$APP_URL （请确保反代到 :$PORT）"
+fi
+
 DB_PASS="$(python3 -c 'import secrets,string;print("".join(secrets.choice(string.ascii_letters+string.digits)for _ in range(20)))')"
 MYSQL_ROOT_PASSWORD="$(python3 -c 'import secrets,string;print("".join(secrets.choice(string.ascii_letters+string.digits)for _ in range(24)))')"
 # 与 Admin.php 一致：纯 md5(明文)，无盐（用 python，宿主无需装 PHP）
 ADMIN_HASH="$(ADMIN_PASS_PLAIN="$ADMIN_PASS_PLAIN" python3 -c 'import hashlib,os;print(hashlib.md5(os.environ["ADMIN_PASS_PLAIN"].encode()).hexdigest())')"
 
-log "纯 Docker 开通 | 租户=$TENANT | 域名=$DOMAIN | 端口=$PORT | 库容器=mysql_${TENANT}"
+log "纯 Docker 开通 | 租户=$TENANT | 访问=$APP_URL | 端口=$PORT | 库容器=mysql_${TENANT}"
 
 # ---------- 1) 代码 ----------
 log "[1/5] 复制母模 => $CODE_DIR"
@@ -183,6 +214,28 @@ if "HOSTNAME = 127.0.0.1" in text or "HOSTNAME = localhost" in text:
 Path(sys.argv[2]).write_text(text, encoding="utf-8")
 PY
 chmod 640 "$CODE_DIR/.env"
+# 容器内 PHP 为 www-data(UID 33)；宿主未必有同名用户，统一 chown 数值 UID
+chown -R 33:33 "$CODE_DIR/runtime" "$CODE_DIR/public/uploads" "$CODE_DIR/public/tmp" "$CODE_DIR/.env" 2>/dev/null || true
+# H5 合部署：静态资源软链（nginx alias 为双保险）
+if [[ -d "$CODE_DIR/public/h5/static" ]]; then
+  mkdir -p "$CODE_DIR/public/static"
+  [[ -e "$CODE_DIR/public/static/js" ]] || ln -sfn ../h5/static/js "$CODE_DIR/public/static/js"
+  [[ -e "$CODE_DIR/public/static/images" ]] || ln -sfn ../h5/static/images "$CODE_DIR/public/static/images"
+  [[ -e "$CODE_DIR/public/static/index.css" ]] || ln -sfn ../h5/static/index.css "$CODE_DIR/public/static/index.css"
+fi
+# 合部署 / IP：清掉 H5 写死的外域 API，走同域
+python3 - "$CODE_DIR" <<'PY' 2>/dev/null || true
+import re, sys
+from pathlib import Path
+js_dir = Path(sys.argv[1]) / "public/h5/static/js"
+if js_dir.is_dir():
+    for p in js_dir.glob("index.*.js"):
+        text = p.read_text(encoding="utf-8", errors="ignore")
+        new = re.sub(r'API_BASE_DIRECT\s*[:=]\s*["\']https?://[^"\']+["\']', 'API_BASE_DIRECT:""', text)
+        new = re.sub(r'baseUrl\s*:\s*["\']https?://[^"\']+["\']', 'baseUrl:""', new)
+        if new != text:
+            p.write_text(new, encoding="utf-8")
+PY
 ok "代码与 .env 就绪（DB_HOST=mysql）"
 
 # ---------- 2) 渲染 compose ----------
@@ -290,7 +343,7 @@ printf '%s============================================================%s\n' "$C_
 printf '%s  纯 Docker 开通成功  %s%s\n' "$C_GRN" "$TENANT" "$C_RST"
 printf '%s============================================================%s\n' "$C_BLD" "$C_RST"
 printf '  %s本机访问%s  : %s%s%s\n' "$C_YLW" "$C_RST" "$C_CYN" "$DIRECT" "$C_RST"
-printf '  %s域名访问%s  : %s%s/%s\n' "$C_YLW" "$C_RST" "$C_CYN" "$APP_URL" "$C_RST"
+printf '  %s对外访问%s  : %s%s/%s\n' "$C_YLW" "$C_RST" "$C_CYN" "$APP_URL" "$C_RST"
 printf '  %s后台入口%s  : %s%s%s\n' "$C_YLW" "$C_RST" "$C_CYN" "$ADMIN_URL" "$C_RST"
 printf '  %s超管账号%s  : %sadmin%s\n' "$C_YLW" "$C_RST" "$C_GRN" "$C_RST"
 printf '  %s超管密码%s  : %s%s%s  (纯MD5无盐)\n' "$C_YLW" "$C_RST" "$C_RED" "$ADMIN_PASS_PLAIN" "$C_RST"
@@ -298,8 +351,11 @@ printf '  %sHTTP端口%s  : %s\n' "$C_YLW" "$C_RST" "$PORT"
 printf '  %s容器%s      : mysql_%s / app_%s / worker_%s / cron_%s\n' "$C_YLW" "$C_RST" "$TENANT" "$TENANT" "$TENANT" "$TENANT"
 printf '  %s凭证%s      : %s\n' "$C_YLW" "$C_RST" "${INST_DIR}/TENANT_INFO.txt"
 printf '%s============================================================%s\n' "$C_BLD" "$C_RST"
-printf '%s说明%s: 与宝塔无关。域名/HTTPS 请在任意入口反代到 127.0.0.1:%s\n' "$C_YLW" "$C_RST" "$PORT"
-printf '  DNS 建议: *.%s → 本机公网 IP\n' "$BASE_DOMAIN"
+if [[ "$_use_ip" -eq 1 ]]; then
+  printf '%s说明%s: 当前为 IP:端口 访问；域名后配时改 .env 的 APP_URL/FRONTEND_INVITE_BASE 并反代到 127.0.0.1:%s\n' "$C_YLW" "$C_RST" "$PORT"
+else
+  printf '%s说明%s: 请将域名反代到 127.0.0.1:%s ；DNS: *.%s → 公网 IP\n' "$C_YLW" "$C_RST" "$PORT" "$BASE_DOMAIN"
+fi
 printf '  日志: docker compose -f %s logs -f\n' "$COMPOSE_FILE"
 printf '  停止: docker compose -f %s down\n' "$COMPOSE_FILE"
 printf '\n'
