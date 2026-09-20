@@ -2,15 +2,13 @@
 
 纯 Docker 一键开通，**不依赖宝塔**。每租户独立：`mysql` + `app` + `worker` + `cron`。
 
-## 全新机器：一条命令（先 upgrade → 装 git → 拉代码 → 部署）
+## 全新机器：一条命令（先 upgrade → 装 git → 拉公开库 → 部署）
 
-CentOS / RHEL / Alma / Rocky（yum）把 `PAT` 换成你的 GitHub Token：
+CentOS / RHEL / Alma / Rocky（yum），公开仓库无需 Token：
 
 ```bash
 yum upgrade -y && yum install -y git && \
-git clone -b skysc-bianyi \
-  https://x-access-token:PAT@github.com/mimaweimahan/ayang-yijian.git \
-  /opt/ayang-yijian && \
+git clone -b skysc-bianyi https://github.com/mimaweimahan/ayang-yijian.git /opt/ayang-yijian && \
 cd /opt/ayang-yijian && bash bare_vps_install.sh
 ```
 
@@ -18,8 +16,8 @@ cd /opt/ayang-yijian && bash bare_vps_install.sh
 
 1. `yum upgrade -y`  
 2. `yum install -y git`  
-3. `git clone` 分支 `skysc-bianyi`  
-4. `bare_vps_install.sh` 内再次确保升级/git，并执行 `bootstrap.sh`（Docker + 镜像 + 开通租户）
+3. `git clone` 公开库分支 `skysc-bianyi`  
+4. `bare_vps_install.sh` → `bootstrap.sh`（Docker + 镜像 + 开通租户）
 
 指定租户/密码/端口：
 

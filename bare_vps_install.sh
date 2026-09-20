@@ -6,18 +6,15 @@
 #   3) 拉取/更新母模仓库
 #   4) bash bootstrap.sh（Docker + 镜像 + 开通租户）
 #
-# 全新机器推荐「一条命令」（把 PAT 换成你的 GitHub Token）:
+# 全新机器推荐「一条命令」（公开仓库，无需 Token）:
 #
 #   yum upgrade -y && yum install -y git && \
-#   git clone -b skysc-bianyi \
-#     https://x-access-token:PAT@github.com/mimaweimahan/ayang-yijian.git \
-#     /opt/ayang-yijian && \
+#   git clone -b skysc-bianyi https://github.com/mimaweimahan/ayang-yijian.git /opt/ayang-yijian && \
 #   cd /opt/ayang-yijian && bash bare_vps_install.sh
 #
 # 已在仓库目录内也可直接:
 #   bash bare_vps_install.sh
 #   bash bare_vps_install.sh agent01 'Pass888!' 18001
-#   GITHUB_TOKEN=ghp_xxx bash bare_vps_install.sh   # 私有库拉取/更新时用
 # =============================================================================
 set -euo pipefail
 

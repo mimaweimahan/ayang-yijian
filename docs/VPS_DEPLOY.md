@@ -6,15 +6,11 @@
 
 ```bash
 yum upgrade -y && yum install -y git && \
-git clone -b skysc-bianyi \
-  https://x-access-token:PAT@github.com/mimaweimahan/ayang-yijian.git \
-  /opt/ayang-yijian && \
+git clone -b skysc-bianyi https://github.com/mimaweimahan/ayang-yijian.git /opt/ayang-yijian && \
 cd /opt/ayang-yijian && bash bare_vps_install.sh
 ```
 
-将 `PAT` 换成 GitHub Personal Access Token（私有库必需）。
-
-`bare_vps_install.sh` 会再跑：系统升级 → 确保 git → 拉/更新代码 → `bootstrap.sh`（Docker + 镜像 + 开通 `agent01`）。
+公开仓库，无需 Token。`bare_vps_install.sh` 会再跑：系统升级 → 确保 git → 拉/更新代码 → `bootstrap.sh`（Docker + 镜像 + 开通 `agent01`）。
 
 ---
 
@@ -41,7 +37,7 @@ bash bootstrap.sh
 
 ## 清单
 
-- [ ] 私有库 Token 可用  
+- [ ] 仓库已设为 **Public**（或至少可匿名 clone）  
 - [ ] 母模含 `base_template.sql` / `vendor`（建议）  
 - [ ] 磁盘 ≥ 40G  
 
