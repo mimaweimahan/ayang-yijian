@@ -1,0 +1,83 @@
+<!doctype html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>绑定谷歌验证</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="/static/admin/css/font.css">
+    <link rel="stylesheet" href="/static/admin/css/login.css">
+    <link rel="stylesheet" href="/static/admin/css/xadmin.css">
+    <script type="text/javascript" src="/static/admin/js/jquery.min.js"></script>
+    <script src="/static/admin/lib/layui/layui.js" charset="utf-8"></script>
+    <!--[if lt IE 9]>
+    <script src="/static/admin/js/html5.min.js"></script>
+    <script src="/static/admin/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="login-bg">
+<div class="login layui-anim layui-anim-up">
+    <div class="message">绑定谷歌验证</div>
+    <div id="darkbannerwrap"></div>
+    <form id="bind-google" class="layui-form">
+        <h2 class="notselect">绑定谷歌令牌</h2>
+        <div style="padding: 10px;background: #ffffff">
+            <img src="{$googleQrCode}" style="width: 100%">
+        </div>
+        <ul>
+            <li class="password">
+                <label>
+                    <i class="layui-icon layui-icon-auz"></i>
+                    <input class="layui-input" name="google_code" maxlength="32"
+                           type="text" autocomplete="off"
+                           required
+                           placeholder="谷歌令牌" title="请输入谷歌令牌">
+                </label>
+            </li>
+            <li class="text-center" style="margin-top: 20px">
+                <button type="submit" class="layui-btn full-width"  lay-submit lay-filter="login">
+                    立即绑定
+                </button>
+            </li>
+        </ul>
+    </form>
+</div>
+<script type="application/javascript">
+    $(function () {
+
+        $('#captcha').click(function () {
+            $(this).attr("src", $(this).attr("src") + '?' + Math.random());
+        });
+        layui.use('form', function () {
+            var form = layui.form;
+            //自定义验证规则
+            //监听提交
+            form.on('submit(login)', function (data) {
+                $.ajax({
+                    url: "{:url('Login/bind')}",
+                    type: 'post',
+                    data: data.field,
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status == '200') {
+                            layer.msg(res.msg, {icon: 1, time: 3000});
+                            location.href = res.url;
+                        } else {
+                            $("#captcha").attr("src", $("#captcha").attr("src") + '?' + Math.random());
+                            layer.msg(res.msg, {icon: 2, time: 3000});
+                        }
+                    },
+                    error: function () {
+                        layer.msg('系统繁忙，请重试', {icon: 2, time: 3000});
+                    }
+                });
+                return false;
+            });
+        });
+    });
+</script>
+</body>
+</html>

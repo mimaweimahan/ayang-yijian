@@ -1,0 +1,237 @@
+{include file="public/header" /}
+<style>
+    .layui-form-selected dl {
+        z-index: 1000;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <input type="hidden" name="id" value="{$id}">
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>标题
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title" name="title" lay-verify="title"
+                           autocomplete="off" class="layui-input" value="{$info.title|default=''}"  required>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>中文标题
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_zh" name="title_zh" lay-verify="title_zh"
+                           autocomplete="off" class="layui-input" value="{$info.title_zh|default=''}" required>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>英文标题
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_en" name="title_en" lay-verify="title_en"
+                           autocomplete="off" class="layui-input" value="{$info.title_en|default=''}" required>
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>葡萄牙语pt
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_pt" name="title_pt" lay-verify="title_pt"
+                           autocomplete="off" class="layui-input" value="{$info.title_pt|default=''}" required>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>荷兰语nl
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_nl" name="title_nl" lay-verify="title_nl"
+                           autocomplete="off" class="layui-input" value="{$info.title_nl|default=''}" required>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>希伯来语he
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_he" name="title_he" lay-verify="title_he"
+                           autocomplete="off" class="layui-input" value="{$info.title_he|default=''}" required>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>法语fr
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_fr" name="title_fr" lay-verify="title_fr"
+                           autocomplete="off" class="layui-input" value="{$info.title_fr|default=''}" required>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>西班牙语es
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_es" name="title_es" lay-verify="title_es"
+                           autocomplete="off" class="layui-input" value="{$info.title_es|default=''}" required>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>德语de
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_de" name="title_de" lay-verify="title_de"
+                           autocomplete="off" class="layui-input" value="{$info.title_de|default=''}" required>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>阿拉伯语ar
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title_ar" name="title_ar" lay-verify="title_ar"
+                           autocomplete="off" class="layui-input" value="{$info.title_ar|default=''}" required>
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <label class="layui-form-label">中文内容</label>
+                <div class="layui-input-block">
+                    <textarea name="content_zh" id="content_zh" class="layui-textarea" placeholder="内容" required>{$info.content_zh|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">英文内容</label>
+                <div class="layui-input-block">
+                    <textarea name="content_en" id="content_en" class="layui-textarea" placeholder="内容" required>{$info.content_en|default=''}</textarea>
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <label class="layui-form-label">葡萄牙语 pt</label>
+                <div class="layui-input-block">
+                    <textarea name="content_pt" id="content_pt" class="layui-textarea" placeholder="内容" required>{$info.content_pt|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">荷兰语 nl</label>
+                <div class="layui-input-block">
+                    <textarea name="content_nl" id="content_nl" class="layui-textarea" placeholder="内容" required>{$info.content_nl|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">希伯来语 he</label>
+                <div class="layui-input-block">
+                    <textarea name="content_he" id="content_he" class="layui-textarea" placeholder="内容" required>{$info.content_he|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">法语 fr</label>
+                <div class="layui-input-block">
+                    <textarea name="content_fr" id="content_fr" class="layui-textarea" placeholder="内容" required>{$info.content_fr|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">西班牙语 es</label>
+                <div class="layui-input-block">
+                    <textarea name="content_es" id="content_es" class="layui-textarea" placeholder="内容" required>{$info.content_es|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">德语 de</label>
+                <div class="layui-input-block">
+                    <textarea name="content_de" id="content_de" class="layui-textarea" placeholder="内容" required>{$info.content_de|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">阿拉伯语 ar</label>
+                <div class="layui-input-block">
+                    <textarea name="content_ar" id="content_ar" class="layui-textarea" placeholder="内容" required>{$info.content_ar|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">
+                    {if condition="$id eq 0"}增加{else/}更新{/if}
+                </button>
+                <a class="layui-btn" href="javascript:history.back()">返回</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form, layedit = layui.layedit;
+        var content_zh = layedit.build('content_zh', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var content_en = layedit.build('content_en', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var content_pt = layedit.build('content_pt', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var content_nl = layedit.build('content_nl', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var content_he = layedit.build('content_he', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var content_fr = layedit.build('content_fr', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var content_es = layedit.build('content_es', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var content_de = layedit.build('content_de', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var content_ar = layedit.build('content_ar', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+
+        //自定义验证规则
+        form.verify({
+            name: function (val) {
+                if (val.length < 2) {
+                    return '标题至少2个字符';
+                }
+            }
+            
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            data.field.content_zh = $('#content_zh').val();
+            data.field.content_en = $('#content_en').val();
+            data.field.content_pt = $('#content_pt').val();
+            data.field.content_nl = $('#content_nl').val();
+            data.field.content_he = $('#content_he').val();
+            data.field.content_he = $('#content_he').val();
+            data.field.content_fr = $('#content_fr').val();
+            data.field.content_es = $('#content_es').val();
+            data.field.content_de = $('#content_de').val();
+            data.field.content_ar = $('#content_ar').val();
+
+                 
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/Notice/add")}',
+                type: 'post',
+                data: data.field,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                        setTimeout(function () {
+                            // 获得frame索引
+                            // var index = parent.layer.getFrameIndex(window.name);
+                            //关闭当前frame
+                            // parent.layer.close(index);
+                            window.history.back();
+                            // window.location.href = '/admin/Product/list';
+                        }, 1000);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+{include file="public/footer" /}

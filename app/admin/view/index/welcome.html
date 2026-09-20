@@ -1,0 +1,154 @@
+{include file="public/header" /}
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    数据统计
+                    <div class="layui-input-inline" style="margin: 5px;float: right;width: 180px">
+                        <input type="text" placeholder="日期时间" autocomplete="off" readonly
+                               id="start_time" value="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-card-body ">
+                    <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                        <li class="layui-col-md3 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>用户总量</h3>
+                                <p>
+                                    <cite id="user_total">{$user_total|default='0'}</cite>
+                                </p>
+                                <span>当前用户总数量-正式用户</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6 ">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>商品总量</h3>
+                                <p>
+                                    <cite id="goods_total">{$goods_total|default='0'}</cite>
+                                </p>
+                                <span>商品总量</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6 ">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>订单总量</h3>
+                                <p>
+                                    <cite id="order_total">{$order_total|default='0'}</cite>
+                                </p>
+                                <span>订单量-正式</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6 ">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>已完成订单金额</h3>
+                                <p>
+                                    <cite id="order_price_total">{$order_price_total|default='0'}</cite>
+                                </p>
+                                <span>已提交订单总金额-正式</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>任务人数</h3>
+                                <p>
+                                    <cite id="task_people">{$task_people|default='0'}</cite>
+                                </p>
+                                <span>做单当天人数-测试用户</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>首充人数</h3>
+                                <p>
+                                    人数：<cite id="first_recharge_people">{$first_recharge_people|default='0'}</cite>
+                                    金额：<cite id="first_recharge_price">{$first_recharge_price|default='0'}</cite>
+                                </p>
+                                <span>当天充值人数及金额-正式用户</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>注册人数</h3>
+                                <p>
+                                    <cite id="register_people">{$register_people|default='0'}</cite>
+                                </p>
+                                <span>当天注册人数-正式用户</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>充值金额</h3>
+                                <p>
+                                    <cite id="recharge_total">{$recharge_total|default='0'}</cite>
+                                </p>
+                                <span>当天总充值金额-正式</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6 ">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>提现金额</h3>
+                                <p>
+                                    <cite id="with_total">{$with_total|default='0'}</cite>
+                                </p>
+                                <span>当天总提现金额-正式</span>
+                            </a>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6 ">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>总余额</h3>
+                                <p>
+                                    <cite id="diff_price">{$diff_price|default='0'}</cite>
+                                </p>
+                                <span>当天的充值提现余额差-正式</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<script type="text/javascript">
+    layui.use(['laydate'], function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#start_time', //指定元素
+            type: 'date',
+            range: true,
+            done: function (value, date, endDate) {
+                var index = layer.load(2, {shade: 0.05, time: 0});
+                $.ajax({
+                    url: "{:url('admin/Index/welcome')}",
+                    type: 'post',
+                    data: {'date': value},
+                    dataType: 'json',
+                    success: function (res) {
+                        layer.close(index);
+                        $('#task_people').text(res.data.task_people);
+                        $('#first_recharge_people').text(res.data.first_recharge_people);
+                        $('#first_recharge_price').text(res.data.first_recharge_price);
+                        $('#register_people').text(res.data.register_people);
+                        $('#recharge_total').text(res.data.recharge_total);
+                        $('#with_total').text(res.data.with_total);
+                        $('#diff_price').text(res.data.diff_price);
+                    },
+                    error: function () {
+                        layer.close(index);
+                        tipAction(2, '系统繁忙');
+                    }
+                });
+            }
+        });
+    });
+</script>
+{include file="public/footer" /}

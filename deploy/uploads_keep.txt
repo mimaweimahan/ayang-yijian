@@ -1,0 +1,8 @@
+# 上传白名单补充（相对 public/uploads/ 或 /uploads/ 均可）
+# 一行一条；# 开头为注释
+# 脚本还会自动：
+#   1) 保留 uploads 根目录下的文件（如 index-img-hotel-title.png）
+#   2) 从 base_template.sql 抽取 configure/level 等系统表引用
+#   3) 默认同时抽取 mod_goods* 商品图（可用 --no-goods 关闭）
+
+# index-img-hotel-title.png   # 根目录文件无需重复写

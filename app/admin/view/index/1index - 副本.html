@@ -1,0 +1,315 @@
+{include file="public/header" /}
+<body class="index">
+<!-- 顶部开始 -->
+<div class="container">
+    <div class="logo">
+        <a href="{:url('Index/index')}">{$system_name}-管理后台</a></div>
+    <div class="left_open">
+        <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
+    </div>
+    <ul class="layui-nav right" lay-filter="">
+        {if condition="$incode gt 0"}
+		<li class="layui-nav-item" style="width: 160px;text-align: center;">
+		       邀请码：{$incode}
+		</li>
+		{else/}
+	    <li class="layui-nav-item" style="width: 160px;text-align: center;">
+		       邀请码：0
+		</li>
+		{/if}
+		<li class="layui-nav-item" style="width: 80px">
+		    <a href="javascript:;" onclick="xadmin.add_tab('充值订单','/admin/Finance/recharge?status=1')">
+		        充值<span class="layui-badge layui-bg-red layuiadmin-badge" id="rech_tip">0</span>
+		    </a>
+		</li>
+        <li class="layui-nav-item" style="width: 80px">
+            <a href="javascript:;" onclick="xadmin.add_tab('提现订单','/admin/Finance/withdraw?status=1')">
+                提现<span class="layui-badge layui-bg-red layuiadmin-badge" id="with_tip">0</span>
+            </a>
+        </li>
+		<li class="layui-nav-item" style="width: 80px">
+		    <a href="javascript:;" onclick="xadmin.add_tab('抢单订单','/admin/Product/grabOrdersa?status=1')">
+		        抢单<span class="layui-badge layui-bg-red layuiadmin-badge" id="grabOrder">0</span>
+		    </a>
+		</li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">{$admin_name}</a>
+            <dl class="layui-nav-child" style="right: -15px;">
+                <dd>
+                    <a href="javascript:;" onclick="clearCache()">清除缓存</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;" onclick="logout()">退出</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+<!-- 顶部结束 -->
+<!-- 中部开始 -->
+<!-- 左侧菜单开始 -->
+<div class="left-nav">
+    <div id="side-nav">
+        <ul id="nav">
+            {foreach name="menu" item="p_menu" key="p_k"}
+            {if condition="($admin_id eq 1)||(in_array((string)$p_k,$rule_config,TRUE))"}
+            <li>
+                <a href="javascript:;"
+                   {if condition="!empty($p_menu['url'])" }onclick="xadmin.add_tab('{$p_menu.name}','{$p_menu.url}')" {/if}>
+                <i class="iconfont left-nav-li">{:htmlspecialchars_decode($p_menu.icon)}</i>
+                <cite>{$p_menu.name}</cite>
+                {if condition="$p_menu.is_open eq 1"}
+                <i class="iconfont nav_right">&#xe697;</i>
+                {/if}
+                </a>
+                {if condition="!empty($p_menu['children'])"}
+                <ul class="sub-menu">
+                    {foreach name="p_menu.children" item="c_menu" key="c_k"}
+                    {if condition="($admin_id eq 1)||(in_array($p_k.'-'.$c_k,$rule_config))"}
+                    {if condition="$c_menu['is_open'] gt 0"}
+                    <li>
+                        <a href="javascript:;"
+                           {if condition="!empty($c_menu['url'])" }
+                           onclick="xadmin.add_tab('{$c_menu.name}','{$c_menu.url}')" {/if}>
+                        <i class="iconfont">{:htmlspecialchars_decode($c_menu.icon)}</i>
+                        <cite>{$c_menu.name}</cite>
+                        </a>
+                    </li>
+                    {/if}
+                    {/if}
+                    {/foreach}
+                </ul>
+                {/if}
+            </li>
+            {/if}
+            {/foreach}
+        </ul>
+    </div>
+</div>
+<!-- <div class="x-slide_left"></div> -->
+<!-- 左侧菜单结束 -->
+<!-- 右侧主体开始 -->
+<div class="page-content">
+    <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+        <ul class="layui-tab-title">
+            <li class="home">
+                <i class="layui-icon">&#xe68e;</i>我的桌面
+            </li>
+        </ul>
+        <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">
+            <dl>
+                <dd data-type="this">关闭当前</dd>
+                <dd data-type="other">关闭其它</dd>
+                <dd data-type="all">关闭全部</dd>
+            </dl>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <iframe src='{:url("Index/welcome")}' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+            </div>
+        </div>
+        <div id="tab_show"></div>
+    </div>
+</div>
+<div class="page-content-bg"></div>
+<style id="theme_style"></style>
+<!-- 右侧主体结束 -->
+<!-- 中部结束 -->
+</body>
+<script type="text/javascript">
+    function logout() {
+        layer.confirm('确定要退出吗', function () {
+            // $('#tab_right dd:last').click();
+            location.href = '{:url(\'admin/Login/logout\')}';
+        })
+    }
+
+    function clearCache() {
+        layer.confirm('确定要清除缓存文件吗', function () {
+            $.ajax({
+                url: '{:url("admin/Index/clearCache")}',
+                type: 'get',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+        })
+    }
+
+    $(function () {
+        // 智能轮询：使用合并接口，减少服务器压力
+        var pollInterval = 2000; // 基础轮询间隔
+        var maxInterval = 10000; // 最大轮询间隔
+        var currentInterval = pollInterval;
+        var hasNewData = false; // 是否有新数据标志
+        
+        // 初始化轮询
+        getAllCounts();
+        
+        // 智能轮询函数
+        function startSmartPolling() {
+            setTimeout(function() {
+                getAllCounts();
+                startSmartPolling();
+            }, currentInterval);
+        }
+        
+        // 合并的计数获取函数
+        function getAllCounts() {
+            $.ajax({
+                type: "post",
+                url: '{:url("admin/Index/getAllCounts")}',
+                success: function (res) {
+                    if (res.status == '200') {
+                        var data = res.data;
+                        var hasChanges = false;
+                        
+                        // 检查提现数量变化
+                        var currentWithCount = parseInt($('#with_tip').text()) || 0;
+                        if (data.with_count > currentWithCount) {
+                            layer.msg('您有新的提现', {
+                                offset: ['60%', '1%'],
+                                skin: 'layer-ext-msgskin2'
+                            });
+                            hasChanges = true;
+                        }
+                        $('#with_tip').text(data.with_count);
+                        
+                        // 检查充值数量变化
+                        var currentRechCount = parseInt($('#rech_tip').text()) || 0;
+                        if (data.rech_count > currentRechCount) {
+                            layer.msg('您有新的充值', {
+                                offset: ['60%', '1%'],
+                                skin: 'layer-ext-msgskin1'
+                            });
+                            hasChanges = true;
+                        }
+                        $('#rech_tip').text(data.rech_count);
+                        
+                        // 检查抢单数量变化
+                        var currentGrabCount = parseInt($('#grabOrder').text()) || 0;
+                        if (data.grab_count > currentGrabCount) {
+                            layer.msg('您有新的订单', {
+                                offset: ['60%', '1%'],
+                                skin: 'layer-ext-msgskin'
+                            });
+                            hasChanges = true;
+                        }
+                        $('#grabOrder').text(data.grab_count);
+                        
+                        // 智能调整轮询间隔
+                        if (hasChanges) {
+                            currentInterval = pollInterval; // 有新数据时快速轮询
+                            hasNewData = true;
+                        } else {
+                            // 无新数据时逐渐增加间隔，但不超过最大值
+                            if (hasNewData) {
+                                currentInterval = Math.min(currentInterval * 1.5, maxInterval);
+                            }
+                        }
+                    }
+                },
+                error: function() {
+                    // 出错时重置为快速轮询
+                    currentInterval = pollInterval;
+                }
+            });
+        }
+        
+        // 启动智能轮询
+        startSmartPolling();
+        
+        // 保留原有的独立函数以兼容可能的其他调用
+        function getWithCount() {
+            $.ajax({
+                type: "post",
+                url: '{:url("admin/Index/getWithCount")}',
+                success: function (res) {
+                    if (res.status == '200') {
+                        if (res.data.with_count > 0) {
+                            layer.msg('您有新的提现', {
+                                offset: ['60%', '1%'],
+                                skin: 'layer-ext-msgskin2'
+                            });
+                        }
+                        $('#with_tip').text(res.data.with_count);
+                    }
+                }
+            });
+        }
+        
+        function getRechange() {
+            $.ajax({
+                type: "post",
+                url: '{:url("admin/Index/getRechange")}',
+                success: function (res) {
+                    if (res.status == '200') {
+                        if (res.data.rech_count > 0) {
+                            layer.msg('您有新的充值', {
+                                offset: ['60%', '1%'],
+                                skin: 'layer-ext-msgskin1'
+                            });
+                        }
+                        $('#rech_tip').text(res.data.rech_count);
+                    }
+                }
+            });
+        }
+        
+        function grabOrders() {
+            $.ajax({
+                type: "post",
+                url: '{:url("admin/Index/grabOrders")}',
+                success: function (res) {
+                    if (res.status == '200') {
+                        if (res.data.rech_count > 0) {
+                            layer.msg('您有新的订单', {
+                                offset: ['60%', '1%'],
+                                skin: 'layer-ext-msgskin'
+                            });
+                        }
+                        $('#grabOrder').text(res.data.rech_count);
+                    }
+                }
+            });
+        }
+    })
+</script>
+<style>
+    
+/* myskin/style.css */
+.layer-ext-msgskin .layui-layer-content {
+    background-color: #FFFF00; /* 红色背景 */
+    color: #000000; /* 白色字体 */
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 5px; /* 可选：圆角边框 */
+}
+/* myskin/style.css */
+.layer-ext-msgskin1 .layui-layer-content {
+    background-color: #00FF00; /* 红色背景 */
+    color: #ffffff; /* 白色字体 */
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 5px; /* 可选：圆角边框 */
+}
+/* myskin/style.css */
+.layer-ext-msgskin2 .layui-layer-content {
+    background-color: #ff0000; /* 红色背景 */
+    color: #ffffff; /* 白色字体 */
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 5px; /* 可选：圆角边框 */
+}
+</style>
+{include file="public/footer" /}

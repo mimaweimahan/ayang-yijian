@@ -1,0 +1,115 @@
+{include file="public/header" /}
+<style>
+    .td-hidden-txt {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" action="{:url('admin/Product/orderList')}">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="order_no" placeholder="请输入订单号" autocomplete="off"
+                                   class="layui-input" value="{$order_no}">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="username" placeholder="请输入用户号码" autocomplete="off"
+                                   class="layui-input" value="{$username}">
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="start_time" placeholder="开始时间" autocomplete="off" readonly
+                                   id="start_time" value="{$start_time}" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <select name="status">
+                                <option value="0">请选择状态</option>
+                                <option value="1" {eq name="status" value="1" }selected{/eq}>等待付款</option>
+                                <option value="2" {eq name="status" value="2" }selected{/eq}>完成付款</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-header">
+                    <button class="layui-btn">
+                        交易总额：{$stat.total_price}
+                    </button>
+                    <button class="layui-btn">
+                        佣金总额：{$stat.comm_price}
+                    </button>
+                    <span style="float: right">共有数据：{$list->total()} 条</span>
+                </div>
+                <div class="layui-card-body" style="overflow-x: auto">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>用户名</th>
+                            <th>用户昵称</th>
+                            <th>余额</th>
+                            <th>上级用户</th>
+                            <th>商品单价</th>
+                            <th width="10%">商品名称</th>
+                            <th>交易数量</th>
+                            <th>交易金额</th>
+                            <th>佣金</th>
+                            <th>交易状态</th>
+                            <th>下单时间</th>
+                            <th>结算时间</th>
+                        </thead>
+                        <tbody>
+                        {foreach name="list" item="vo"}
+                        <tr>
+                            <td>{$vo.order_no}</td>
+                            <td>{$vo.username}</td>
+                            <td>{$vo.nickname}</td>
+                            <td>{$vo.balance}</td>
+                            <td>{$parent[$vo.pid]|default='无'}</td>
+                            <td>{$vo.g_price}</td>
+                            <td>{$vo.g_name}</td>
+                            <td>{$vo.num}</td>
+                            <td>{$vo.price}</td>
+                            <td>{$vo.commission}</td>
+                            <td>{$vo.status_txt}</td>
+                            <td>{$vo.create_time}</td>
+                            <td>{$vo.end_time}</td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body">
+                    <div class="page">
+                        {$list|raw}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    layui.use(['form', 'laydate'], function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#start_time', //指定元素
+            type: 'datetime',
+        });
+    });
+</script>
+{include file="public/footer" /}

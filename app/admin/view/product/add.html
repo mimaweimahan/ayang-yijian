@@ -1,0 +1,259 @@
+{include file="public/header" /}
+<style>
+    .layui-form-selected dl {
+        z-index: 1000;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <input type="hidden" name="id" value="{$id}">
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" name="name" lay-verify="name"
+                           autocomplete="off" class="layui-input" value="{$info.name|default=''}">
+                </div>
+            </div>
+            
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>中文名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="zh_name" name="zh_name" lay-verify="zh_name"
+                           autocomplete="off" class="layui-input" value="{$info.zh_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>英语名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="en_name" name="en_name" lay-verify="en_name"
+                           autocomplete="off" class="layui-input" value="{$info.en_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>葡萄牙语名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="pt_name" name="pt_name" lay-verify="pt_name"
+                           autocomplete="off" class="layui-input" value="{$info.pt_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>荷兰语名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="nl_name" name="nl_name" lay-verify="nl_name"
+                           autocomplete="off" class="layui-input" value="{$info.nl_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>希伯来语名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="he_name" name="he_name" lay-verify="he_name"
+                           autocomplete="off" class="layui-input" value="{$info.he_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>法语名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="fr_name" name="fr_name" lay-verify="fr_name"
+                           autocomplete="off" class="layui-input" value="{$info.fr_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>西班牙语名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="es_name" name="es_name" lay-verify="es_name"
+                           autocomplete="off" class="layui-input" value="{$info.es_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>德语名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="de_name" name="de_name" lay-verify="de_name"
+                           autocomplete="off" class="layui-input" value="{$info.de_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>阿拉伯语名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="ar_name" name="ar_name" lay-verify="ar_name"
+                           autocomplete="off" class="layui-input" value="{$info.ar_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">封面图</label>
+                <div class="layui-input-inline" id="uploadControl">
+                    <div class="layui-upload-drag {notempty name='info.img'}layui-hide{/notempty}">
+                        <i class="layui-icon" style="font-size: 30px"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <div class="{empty name='info.img'}layui-hide{/empty}" id="uploadView">
+                        <img src="{$info.img|default=''}" alt="上传成功后渲染" style="max-width: 200px" width="100%">
+                    </div>
+                    <input type="hidden" name="img" lay-verify="image" value="{$info.img|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="price" class="layui-form-label">
+                    <span class="x-red">*</span>价格
+                </label>
+                <div class="layui-input-inline" style="width: 80%;">
+                    <input type="text" id="price" name="price" lay-verify="price"
+                           autocomplete="off" class="layui-input" value="{$info.price|default=''}">
+                </div>
+            </div>
+
+
+            {if condition="$product_type eq 1"}
+            <div class="layui-form-item">
+                <label for="room_name" class="layui-form-label">房间类型
+                </label>
+                <div class="layui-input-inline" style="width: 80%;">
+                    <input type="text" id="room_name" name="room_name" lay-verify="room_name"
+                           autocomplete="off" class="layui-input" value="{$info.room_name|default=''}">
+                </div>
+            </div>
+            {/if}
+
+            <div class="layui-form-item">
+                <label for="rating" class="layui-form-label">评分
+                </label>
+                <div class="layui-input-inline" style="width: 80%;">
+                    <input type="text" id="rating" name="rating" lay-verify="rating"
+                           autocomplete="off" class="layui-input" value="{$info.rating|default=''}">
+                </div>
+            </div>
+
+            {if condition="$product_type eq 1"}
+            <div class="layui-form-item">
+                <label for="rating_tag" class="layui-form-label">评分标签
+                </label>
+                <div class="layui-input-inline" style="width: 80%;">
+                    <input type="text" id="rating_tag" name="rating_tag" lay-verify="rating_tag"
+                           autocomplete="off" class="layui-input" value="{$info.rating_tag|default=''}">
+                </div>
+            </div>
+            {/if}
+
+
+            <div class="layui-form-item">
+                <label for="comments_number" class="layui-form-label">评价数量
+                </label>
+                <div class="layui-input-inline" style="width: 80%;">
+                    <input type="text" id="comments_number" name="comments_number" lay-verify="comments_number"
+                           autocomplete="off" class="layui-input" value="{$info.comments_number|default=''}">
+                </div>
+            </div>
+
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">介绍</label>
+                <div class="layui-input-block">
+                    <textarea name="desc" class="layui-textarea" placeholder="介绍-英语">{$info.desc|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">
+                    {if condition="$id eq 0"}增加{else/}更新{/if}
+                </button>
+                <a class="layui-btn" href="javascript:history.back()">返回</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'upload'], function () {
+        var form = layui.form, upload = layui.upload;
+        //拖拽上传
+        upload.render({
+            elem: '#uploadControl'
+            , url: '{:url("admin/Index/upload")}' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , accept: 'images' //允许上传的文件类型
+            , field: 'file'//设定文件域的字段名
+            , done: function (res) {
+                //上传完毕
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                    $('.layui-upload-drag').addClass('layui-hide');
+                    layui.$('#uploadView').removeClass('layui-hide').find('img').attr('src', res.data.file);
+                    $('#uploadView').next().val(res.data.file);
+                } else {
+                    tipAction(2, res.msg);
+                }
+            }
+            , error: function () {
+                tipAction(2, '系统繁忙');
+            }
+        });
+
+        //自定义验证规则
+        form.verify({
+            name: function (val) {
+                if (val.length < 2) {
+                    return '标题至少2个字符';
+                }
+            },
+            image: function (val) {
+                if (val == '') {
+                    return '请上传封面图';
+                }
+            },
+            price: [/^[0-9]\d*\.\d*|^[1-9]\d*/, '请输入正确的价格'],
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/Product/add")}',
+                type: 'post',
+                data: data.field,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                        setTimeout(function () {
+                            // 获得frame索引
+                            // var index = parent.layer.getFrameIndex(window.name);
+                            //关闭当前frame
+                            // parent.layer.close(index);
+                            window.history.back();
+                            // window.location.href = '/admin/Product/list';
+                        }, 1000);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+{include file="public/footer" /}

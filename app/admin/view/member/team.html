@@ -1,0 +1,94 @@
+{include file="public/header" /}
+<style>
+    .td-hidden-txt {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" action="{:url('admin/Member/team')}">
+                        <input type="hidden" name="pid" value="{$pid}">
+                        <div class="layui-inline layui-show-xs-block">
+                            <select name="status">
+                                <option value="0">请选择状态</option>
+                                <option value="1" {eq name="status" value="1" }selected{/eq}>启用</option>
+                                <option value="2" {eq name="status" value="2" }selected{/eq}>禁用</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>
+                            </button>
+                        </div>
+                        <span style="float: right">共有数据：{$list->total()} 条</span>
+                    </form>
+                </div>
+                <div class="layui-card-body" style="overflow-x: auto">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th width="4%">ID</th>
+                            <th>基础信息</th>
+                            <th>账号信息</th>
+                            <th>钱包信息</th>
+                            <th>任务情况</th>
+                            <th>邀请码</th>
+                            <th>登录信息</th>
+                            <th>注册时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach name="list" item="vo"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>
+                                账号：{$vo.username}<br>
+                                昵称：{$vo.nickname}<br>
+                                等级：{$vo.level_name}<br>
+                                上级：{$vo.p_nickname|default="暂无"}
+                            </td>
+                            <td>
+                                类型：{$vo.type}<br>
+                                状态：{$vo.status_txt}<br>
+                                交易：{$vo.trade_txt}<br>
+                                信用：{$vo.credit_score}
+                            </td>
+                            <td>
+                                可用资金：{$vo.balance}<br>
+                                冻结资金：{$vo.freeze_balance}<br>
+                                累计充值：{$vo.recharge}<br>
+                                累计提现：{$vo.withdraw}<br>
+                                累计佣金：{$vo.commission}
+                            </td>
+                            <td>{$vo.order_total}-{$vo.order_num}</td>
+                            <td>{$vo.invite_code}</td>
+                            <td>
+                                登录时间：{$vo.login_time}<br>
+                                登录ip：{$vo.login_ip}
+                            </td>
+                            <td>{$vo.create_time}</td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body">
+                    <div class="page">
+                        {$list|raw}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    layui.use(['form', 'laydate']);
+</script>
+{include file="public/footer" /}

@@ -1,0 +1,98 @@
+{include file="public/header" /}
+<style>
+    .layui-form-selected dl {
+        z-index: 1000;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <input type="hidden" name="id" value="{$id}">
+            <div class="layui-form-item">
+                <label for="appointment" class="layui-form-label">爆单开始单号</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="appointment" name="appointment" lay-verify="appointment"
+                           autocomplete="off" class="layui-input" value="{$info.appointment|default=''}"
+                           {if condition="$id gt 0" }{/if}
+                    >
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="amount" class="layui-form-label">金额</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="amount" name="amount" lay-verify="amount"
+                           autocomplete="off" class="layui-input" value="{$info.amount|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="number" class="layui-form-label">佣金倍数</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="number" name="number" lay-verify="number"
+                           autocomplete="off" class="layui-input" value="{$info.number|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="status" class="layui-form-label">触发</label>
+                <div class="layui-input-inline">
+                    <input type="number" id="status" name="status" lay-verify="status"
+                           autocomplete="off" class="layui-input" value="{$info.status|default='1000'}">
+                </div>
+				<span>*.1未触发，2触发</span>
+            </div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label">
+			    </label>
+			    <button class="layui-btn" lay-filter="add" lay-submit="">
+			        更新
+			    </button>
+			</div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function () {
+        var form = layui.form;
+
+        //自定义验证规则
+        form.verify({
+            name: function (val) {
+                if (val.length < 2) {
+                    return '至少2个字符';
+                }
+            },
+            image: function (val) {
+                if (val == '') {
+                    return '请上传图片';
+                }
+            },
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("/admin/Product/hotsalesadd")}',
+                type: 'post',
+                data: data.field,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                        setTimeout(function () {
+                            parent.location.reload();
+                        }, 1000);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+{include file="public/footer" /}

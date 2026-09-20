@@ -1,0 +1,115 @@
+{include file="public/header" /}
+<style>
+    .upload-span {
+        width: 20%;
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .upload-more {
+        width: 100%;
+        height: 150px;
+    }
+
+    .upload-close {
+        position: absolute;
+        background: white;
+        padding: 5px;
+        right: 0;
+        cursor: pointer;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 80%;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">公告-中文</label>
+                <div class="layui-input-block">
+                    <textarea name="tips_zh" id="tips_zh" class="layui-textarea" placeholder="请输入">{$info.tips_zh|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">公告-英语</label>
+                <div class="layui-input-block">
+                    <textarea name="tips_en" id="tips_en" class="layui-textarea" placeholder="请输入">{$info.tips_en|default=''}</textarea>
+                </div>
+            </div>
+            <!--<div class="layui-form-item">-->
+            <!--    <label class="layui-form-label">公告-韓語</label>-->
+            <!--    <div class="layui-input-block">-->
+            <!--        <textarea name="tips_hy" id="tips_hy" class="layui-textarea" placeholder="请输入">{$info.tips_en|default=''}</textarea>-->
+            <!--    </div>-->
+            <!--</div>-->
+            <!--<div class="layui-form-item">-->
+            <!--    <label class="layui-form-label">公告-日語</label>-->
+            <!--    <div class="layui-input-block">-->
+            <!--        <textarea name="tips_jp" id="tips_jp" class="layui-textarea" placeholder="请输入">{$info.tips_jp|default=''}</textarea>-->
+            <!--    </div>-->
+            <!--</div>-->
+            <!--<div class="layui-form-item">-->
+            <!--    <label class="layui-form-label">注册协议-繁体</label>-->
+            <!--    <div class="layui-input-block">-->
+            <!--        <textarea name="register_en" id="register_zh" class="layui-textarea" placeholder="请输入注册协议-繁体">{$info.register_zh|default=''}</textarea>-->
+            <!--    </div>-->
+            <!--</div>-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="application/javascript">
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form;
+        var layedit = layui.layedit;
+        // var tips_zh = layedit.build('tips_zh', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        // var tips_en = layedit.build('tips_en', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        // var tips_jp = layedit.build('tips_jp', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        // var tips_hy = layedit.build('tips_hy', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        //监听提交
+        form.on('submit(add)', function (data) {
+            // data.field.tips_hy = layedit.getContent(tips_hy);
+            // data.field.tips_jp = layedit.getContent(tips_jp);
+            // data.field.tips_en = layedit.getContent(tips_en);
+            //  data.field.tips_zh = layedit.getContent(tips_zh);
+              data.field.tips_hy = $('#tips_hy').val();
+            data.field.tips_jp = $('#tips_jp').val();
+            data.field.tips_en =$('#tips_en').val();
+             data.field.tips_zh = $('#tips_zh').val();
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/System/configSubmit")}',
+                type: 'post',
+                data: {'config': data.field, 'id': 6},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙,请重试');
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{include file="public/footer" /}

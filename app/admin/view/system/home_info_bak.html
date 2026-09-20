@@ -1,0 +1,527 @@
+{include file="public/header" /}
+<style>
+    .upload-span {
+        width: 20%;
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .upload-more {
+        width: 100%;
+        height: 150px;
+    }
+
+    .upload-close {
+        position: absolute;
+        background: white;
+        padding: 5px;
+        right: 0;
+        cursor: pointer;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 80%;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    证书-日语
+                </label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="cert_list_jp" value="{$info.cert_list_jp|default=''}">
+                    <button type="button" class="layui-btn uploadMore">多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        {foreach name='cert_list_jp' item='vo'}
+                        <span class="upload-span">
+                            <img src="{$vo}" class="upload-more">
+                            <em class="upload-close" onclick="delImg(this)">X</em>
+                        </span>
+                        {/foreach}
+                    </blockquote>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    证书-韩语
+                </label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="cert_list_hy" value="{$info.cert_list_hy|default=''}">
+                    <button type="button" class="layui-btn uploadMore">多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        {foreach name='cert_list_hy' item='vo'}
+                        <span class="upload-span">
+                            <img src="{$vo}" class="upload-more">
+                            <em class="upload-close" onclick="delImg(this)">X</em>
+                        </span>
+                        {/foreach}
+                    </blockquote>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    证书-英文
+                </label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="cert_list_en" value="{$info.cert_list_en|default=''}">
+                    <button type="button" class="layui-btn uploadMore">多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        {foreach name='cert_list_en' item='vo'}
+                        <span class="upload-span">
+                            <img src="{$vo}" class="upload-more">
+                            <em class="upload-close" onclick="delImg(this)">X</em>
+                        </span>
+                        {/foreach}
+                    </blockquote>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    证书-繁体
+                </label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="cert_list_zh" value="{$info.cert_list_zh|default=''}">
+                    <button type="button" class="layui-btn uploadMore">多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        {foreach name='cert_list_zh' item='vo'}
+                        <span class="upload-span">
+                            <img src="{$vo}" class="upload-more">
+                            <em class="upload-close" onclick="delImg(this)">X</em>
+                        </span>
+                        {/foreach}
+                    </blockquote>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    事件-日语
+                </label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="event_list_jp" value="{$info.event_list_jp|default=''}">
+                    <button type="button" class="layui-btn uploadMore">多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        {foreach name='event_list_jp' item='vo'}
+                        <span class="upload-span">
+                            <img src="{$vo}" class="upload-more">
+                            <em class="upload-close" onclick="delImg(this)">X</em>
+                        </span>
+                        {/foreach}
+                    </blockquote>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    事件-英文
+                </label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="event_list_en" value="{$info.event_list_en|default=''}">
+                    <button type="button" class="layui-btn uploadMore">多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        {foreach name='event_list_en' item='vo'}
+                        <span class="upload-span">
+                            <img src="{$vo}" class="upload-more">
+                            <em class="upload-close" onclick="delImg(this)">X</em>
+                        </span>
+                        {/foreach}
+                    </blockquote>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    事件-繁体
+                </label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="event_list_zh" value="{$info.event_list_zh|default=''}">
+                    <button type="button" class="layui-btn uploadMore">多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        {foreach name='event_list_zh' item='vo'}
+                        <span class="upload-span">
+                            <img src="{$vo}" class="upload-more">
+                            <em class="upload-close" onclick="delImg(this)">X</em>
+                        </span>
+                        {/foreach}
+                    </blockquote>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    事件-韩语
+                </label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="event_list_hy" value="{$info.event_list_hy|default=''}">
+                    <button type="button" class="layui-btn uploadMore">多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        {foreach name='event_list_hy' item='vo'}
+                        <span class="upload-span">
+                            <img src="{$vo}" class="upload-more">
+                            <em class="upload-close" onclick="delImg(this)">X</em>
+                        </span>
+                        {/foreach}
+                    </blockquote>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">弹窗-日语</label>
+                <div class="layui-input-inline upload">
+                    <div class="layui-upload-drag {notempty name='info.pop_jp'}layui-hide{/notempty}">
+                        <i class="layui-icon" style="font-size: 30px"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <div class="{empty name='info.pop_jp'}layui-hide{/empty}" title="上传弹窗-日语">
+                        <img src="{$info.pop_jp|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+                             width="100%">
+                    </div>
+                    <input type="hidden" name="pop_jp" value="{$info.pop_jp|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">弹窗-韩语</label>
+                <div class="layui-input-inline upload">
+                    <div class="layui-upload-drag {notempty name='info.pop_hy'}layui-hide{/notempty}">
+                        <i class="layui-icon" style="font-size: 30px"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <div class="{empty name='info.pop_hy'}layui-hide{/empty}" title="上传弹窗-韩语">
+                        <img src="{$info.pop_hy|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+                             width="100%">
+                    </div>
+                    <input type="hidden" name="pop_hy" value="{$info.pop_hy|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">弹窗-英文</label>
+                <div class="layui-input-inline upload">
+                    <div class="layui-upload-drag {notempty name='info.pop_en'}layui-hide{/notempty}">
+                        <i class="layui-icon" style="font-size: 30px"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <div class="{empty name='info.pop_en'}layui-hide{/empty}" title="上传弹窗-越南">
+                        <img src="{$info.pop_en|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+                             width="100%">
+                    </div>
+                    <input type="hidden" name="pop_en" value="{$info.pop_en|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">弹窗-繁体</label>
+                <div class="layui-input-inline upload">
+                    <div class="layui-upload-drag {notempty name='info.pop_zh'}layui-hide{/notempty}">
+                        <i class="layui-icon" style="font-size: 30px"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <div class="{empty name='info.pop_zh'}layui-hide{/empty}" title="上传弹窗-中文">
+                        <img src="{$info.pop_en|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+                             width="100%">
+                    </div>
+                    <input type="hidden" name="pop_zh" value="{$info.pop_zh|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">规则-日语</label>
+                <div class="layui-input-block">
+                    <textarea name="rule_jp" class="layui-textarea" id="rule_jp"
+                              placeholder="请输入规则-日语">{$info.rule_jp|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">规则-韩语</label>
+                <div class="layui-input-block">
+                    <textarea name="rule_hy" class="layui-textarea" id="rule_hy"
+                              placeholder="请输入规则-韩语">{$info.rule_hy|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">规则-英语</label>
+                <div class="layui-input-block">
+                    <textarea name="rule_en" class="layui-textarea" id="rule_en"
+                              placeholder="请输入规则-英语">{$info.rule_en|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">规则-繁体</label>
+                <div class="layui-input-block">
+                    <textarea name="rule_zh" class="layui-textarea" id="rule_zh"
+                              placeholder="请输入规则-繁体">{$info.rule_zh|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">介绍-日语</label>
+                <div class="layui-input-block">
+                    <textarea name="intro_jp" class="layui-textarea" id="intro_jp"
+                              placeholder="请输入介绍-日语">{$info.intro_jp|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">介绍-韩语</label>
+                <div class="layui-input-block">
+                    <textarea name="intro_hy" class="layui-textarea" id="intro_hy"
+                              placeholder="请输入介绍-韩语">{$info.intro_hy|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">介绍-英语</label>
+                <div class="layui-input-block">
+                    <textarea name="intro_en" class="layui-textarea" id="intro_en"
+                              placeholder="请输入介绍-英语">{$info.intro_en|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">介绍-繁体</label>
+                <div class="layui-input-block">
+                    <textarea name="intro_zh" class="layui-textarea" id="intro_zh"
+                              placeholder="请输入介绍-繁体">{$info.intro_zh|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">关于我们-日语</label>
+                <div class="layui-input-block">
+                    <textarea name="about_us_jp" id="about_us_jp" class="layui-textarea" placeholder="请输入关于我们-日语">{$info.about_us_jp|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">关于我们-韩语</label>
+                <div class="layui-input-block">
+                    <textarea name="about_us_hy" id="about_us_hy" class="layui-textarea" placeholder="请输入关于我们-韩语">{$info.about_us_hy|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">关于我们-英语</label>
+                <div class="layui-input-block">
+                    <textarea name="about_us_en" id="about_us_en" class="layui-textarea" placeholder="请输入关于我们-英语">{$info.about_us_en|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">关于我们-繁体</label>
+                <div class="layui-input-block">
+                    <textarea name="about_us_zh" id="about_us_zh" class="layui-textarea" placeholder="请输入关于我们-繁体">{$info.about_us_zh|default=''}</textarea>
+                </div>
+            </div>
+            <!--<div class="layui-form-item">-->
+            <!--    <label class="layui-form-label">系统提示-越南</label>-->
+            <!--    <div class="layui-input-block">-->
+            <!--        <textarea name="system_tips_vi" class="layui-textarea" placeholder="请输入系统提示-越南语">{$info.system_tips_vi|default=''}</textarea>-->
+            <!--    </div>-->
+            <!--</div>-->
+            <!--<div class="layui-form-item">-->
+            <!--    <label class="layui-form-label">系统提示-英语</label>-->
+            <!--    <div class="layui-input-block">-->
+            <!--        <textarea name="system_tips_en" class="layui-textarea" placeholder="请输入系统提示-英语">{$info.system_tips_en|default=''}</textarea>-->
+            <!--    </div>-->
+            <!--</div>-->
+            <!--<div class="layui-form-item">-->
+            <!--    <label class="layui-form-label">系统提示-繁体</label>-->
+            <!--    <div class="layui-input-block">-->
+            <!--        <textarea name="system_tips_zh" class="layui-textarea" placeholder="请输入系统提示-繁体">{$info.system_tips_zh|default=''}</textarea>-->
+            <!--    </div>-->
+            <!--</div>-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">注册消息-日语</label>
+                <div class="layui-input-block">
+                    <textarea name="register_jp" class="layui-textarea" placeholder="请输入注册消息-日语">{$info.register_jp|default=''}</textarea>
+                </div>
+            </div>
+             <div class="layui-form-item">
+                <label class="layui-form-label">注册消息-韩语</label>
+                <div class="layui-input-block">
+                    <textarea name="register_hy" class="layui-textarea" placeholder="请输入注册消息-韩语">{$info.register_hy|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">注册消息-英语</label>
+                <div class="layui-input-block">
+                    <textarea name="register_en" class="layui-textarea" placeholder="请输入注册消息-英语">{$info.register_en|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">注册消息-繁体</label>
+                <div class="layui-input-block">
+                    <textarea name="register_zh" class="layui-textarea" placeholder="请输入注册消息-繁体">{$info.register_zh|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">充值消息-日语</label>
+                <div class="layui-input-block">
+                    <textarea name="recharge_jp" class="layui-textarea" placeholder="请输入充值消息-日语">{$info.recharge_jp|default=''}</textarea>
+                </div>
+            </div>
+             <div class="layui-form-item">
+                <label class="layui-form-label">充值消息-韩语</label>
+                <div class="layui-input-block">
+                    <textarea name="recharge_hy" class="layui-textarea" placeholder="请输入充值消息-韩语">{$info.recharge_hy|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">充值消息-英语</label>
+                <div class="layui-input-block">
+                    <textarea name="recharge_en" class="layui-textarea" placeholder="请输入充值消息-英语">{$info.recharge_en|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">充值消息-繁体</label>
+                <div class="layui-input-block">
+                    <textarea name="recharge_zh" class="layui-textarea" placeholder="请输入充值消息-繁体">{$info.recharge_zh|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="application/javascript">
+    layui.use(['upload', 'form', 'layedit'], function () {
+        var upload = layui.upload, form = layui.form;
+        var layedit = layui.layedit;
+        var rule_vi = layedit.build('rule_vi', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var rule_en = layedit.build('rule_en', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var intro_vi = layedit.build('intro_vi', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var intro_en = layedit.build('intro_en', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var about_us_vi = layedit.build('about_us_vi', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var about_us_en = layedit.build('about_us_en', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+
+        var rule_zh = layedit.build('rule_zh', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var intro_zh = layedit.build('intro_zh', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var about_us_zh = layedit.build('about_us_zh', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+
+        //多图上传
+        upload.render({
+            elem: '.uploadMore'
+            , url: '{:url("admin/Index/upload")}' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , multiple: true
+            , accept: 'images' //允许上传的文件类型
+            , field: 'file'//设定文件域的字段名
+            , done: function (res) {
+                //上传完毕
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                    // console.log(this.item)
+                    var obj = this.item;
+                    obj.next().next().append('<span class="upload-span"><img src="' + res.data.file + '" class="upload-more"><em class="upload-close" onclick="delImg(this)">X</em></span>');
+                    var input_arr = obj.prev().val().split(',');
+                    input_arr.push(res.data.file);
+                    obj.prev().val(input_arr.join(','));
+                } else {
+                    tipAction(2, res.msg);
+                }
+            }
+            , error: function () {
+                tipAction(2, '系统繁忙');
+            }
+        });
+        upload.render({
+            elem: '.upload'
+            , url: '{:url("admin/Index/upload")}' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , accept: 'images' //允许上传的文件类型
+            , field: 'file'//设定文件域的字段名
+            , done: function (res) {
+                //上传完毕
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                    var obj = this.item;
+                    obj.children(":first").addClass('layui-hide');
+                    obj.children().eq(1).removeClass('layui-hide').find('img').attr('src', res.data.file);
+                    obj.children().eq(2).val(res.data.file);
+                } else {
+                    tipAction(2, res.msg);
+                }
+            }
+            , error: function () {
+                tipAction(2, '系统繁忙');
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            data.field.rule_vi = layedit.getContent(rule_vi);
+            data.field.rule_en = layedit.getContent(rule_en);
+            data.field.intro_vi = layedit.getContent(intro_vi);
+            data.field.intro_en = layedit.getContent(intro_en);
+            data.field.about_us_vi = layedit.getContent(about_us_vi);
+            data.field.about_us_en = layedit.getContent(about_us_en);
+
+            data.field.rule_zh = layedit.getContent(rule_zh);
+            data.field.intro_zh = layedit.getContent(intro_zh);
+            data.field.about_us_zh = layedit.getContent(about_us_zh);
+
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/System/configSubmit")}',
+                type: 'post',
+                data: {'config': data.field, 'id': 2},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙,请重试');
+                }
+            });
+            return false;
+        });
+    });
+
+    function delImg(obj) {
+        var input_arr = $(obj).parent().parent().parent().children(':first').val().split(',');
+        var img_src = $(obj).prev().attr('src');
+        input_arr.splice(input_arr.indexOf(img_src), 1);
+        $(obj).parent().parent().parent().children(':first').val(input_arr.join(','));
+        $(obj).parent().remove();
+    }
+
+    function submitConfig() {
+        let obj = $('input[type="hidden"]');
+        let config = {};
+        let key, val;
+        obj.each(function (index) {
+            key = $(this).attr('name');
+            val = $(this).val();
+            if (val) {
+                config[key] = val;
+            }
+        });
+        config['rule_vi'] = $('#rule_vi').val();
+        config['rule_en'] = $('#rule_en').val();
+        config['intro_vi'] = $('#intro_vi').val();
+        config['intro_en'] = $('#intro_en').val();
+
+        let layer_index = 0;
+        $.ajax({
+            url: "{:url('admin/System/configSubmit')}",
+            type: 'post',
+            data: {'config': config, 'id': 2},
+            beforeSend: function () {
+                layer_index = layer.load(2, {time: 0, shade: 0.5});
+            },
+            success: function (res) {
+                layer.close(layer_index);
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                } else {
+                    tipAction(2, res.msg);
+                }
+            },
+            error: function () {
+                layer.close(layer_index);
+                tipAction(2, '系统繁忙');
+            }
+        });
+    }
+</script>
+{include file="public/footer" /}

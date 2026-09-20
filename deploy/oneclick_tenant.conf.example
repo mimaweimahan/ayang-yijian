@@ -1,0 +1,19 @@
+# 纯 Docker 一键开通配置（与宝塔无关）
+# cp deploy/oneclick_tenant.conf.example deploy/oneclick_tenant.conf
+
+# 租户域名后缀：访问 {租户}.{BASE_DOMAIN}
+BASE_DOMAIN=example.com
+# 设为 1 时禁止使用 example.com / yourdomain.com 占位
+REQUIRE_REAL_DOMAIN=0
+
+# 对外 URL 协议（TLS 若由上层 Caddy/Traefik/CDN 终结，可填 https）
+APP_SCHEME=http
+
+TENANTS_ROOT=/var/www/tenants
+PORT_BASE=18001
+PORT_MAX=18999
+
+IMAGE_TAG=tenant-app:php74
+TZ_NAME=Asia/Shanghai
+WORKER_SLEEP=30
+SKIP_DOCKER_BUILD=0

@@ -1,0 +1,141 @@
+# =============================================================================
+# docker-compose.template.yml — 纯 Docker 单租户隔离栈（无宝塔依赖）
+# 服务: mysql + app + worker + cron
+# 占位符由 oneclick_tenant.sh 替换
+# =============================================================================
+
+name: tenant_{{TENANT_ID}}
+
+networks:
+  tenant_net:
+    name: net_{{TENANT_ID}}
+    driver: bridge
+
+volumes:
+  tenant_runtime:
+    name: runtime_{{TENANT_ID}}
+  tenant_mysql:
+    name: mysql_{{TENANT_ID}}
+
+x-app-env: &app-env
+  TENANT_ID: "{{TENANT_ID}}"
+  APP_URL: "{{APP_URL}}"
+  TZ: "{{TZ}}"
+  # 库在同一 compose 网络内，主机名固定为服务名 mysql（绝不是 127.0.0.1）
+  DB_HOST: "mysql"
+  DB_PORT: "3306"
+  DB_NAME: "{{DB_NAME}}"
+  DB_USER: "{{DB_USER}}"
+  DB_PASS: "{{DB_PASS}}"
+  DB_PREFIX: "{{DB_PREFIX}}"
+
+x-app-common: &app-common
+  image: {{IMAGE_TAG}}
+  build:
+    context: {{BUILD_CONTEXT}}
+    dockerfile: docker/Dockerfile
+  restart: unless-stopped
+  working_dir: /var/www/html
+  networks:
+    - tenant_net
+  logging:
+    driver: json-file
+    options:
+      max-size: "20m"
+      max-file: "3"
+
+services:
+  # ---------------------------------------------------------------------------
+  # mysql — 租户独占数据库（数据卷隔离）
+  # ---------------------------------------------------------------------------
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_{{TENANT_ID}}
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --max_allowed_packet=256M
+      - --sql-mode=NO_ENGINE_SUBSTITUTION
+    environment:
+      TZ: "{{TZ}}"
+      MYSQL_ROOT_PASSWORD: "{{MYSQL_ROOT_PASSWORD}}"
+      MYSQL_DATABASE: "{{DB_NAME}}"
+      MYSQL_USER: "{{DB_USER}}"
+      MYSQL_PASSWORD: "{{DB_PASS}}"
+    volumes:
+      - tenant_mysql:/var/lib/mysql
+    networks:
+      - tenant_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p{{MYSQL_ROOT_PASSWORD}}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ---------------------------------------------------------------------------
+  # app — Web（对外仅映射 {{PORT}}，入口反代自行决定，与宝塔无关）
+  # ---------------------------------------------------------------------------
+  app:
+    <<: *app-common
+    container_name: app_{{TENANT_ID}}
+    ports:
+      - "{{PORT}}:80"
+    environment:
+      <<: *app-env
+      APP_ROLE: "web"
+    volumes:
+      - {{TENANT_CODE_DIR}}:/var/www/html:rw
+      - tenant_runtime:/var/www/html/runtime
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  task-worker:
+    <<: *app-common
+    container_name: worker_{{TENANT_ID}}
+    command: ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.worker.conf"]
+    environment:
+      <<: *app-env
+      APP_ROLE: "worker"
+      WORKER_SLEEP: "{{WORKER_SLEEP}}"
+    volumes:
+      - {{TENANT_CODE_DIR}}:/var/www/html:rw
+      - tenant_runtime:/var/www/html/runtime
+      - {{DOCKER_DIR}}/supervisor/supervisord.worker.conf:/etc/supervisor/supervisord.worker.conf:ro
+      - {{DOCKER_DIR}}/supervisor/worker.conf:/etc/supervisor/conf.d/worker.conf:ro
+      - {{DOCKER_DIR}}/scripts/worker-loop.sh:/usr/local/bin/worker-loop.sh:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+      app:
+        condition: service_started
+
+  task-cron:
+    <<: *app-common
+    container_name: cron_{{TENANT_ID}}
+    command: ["/usr/local/bin/supercronic", "-passthrough-logs", "/etc/cron.d/tenant"]
+    environment:
+      <<: *app-env
+      APP_ROLE: "cron"
+    volumes:
+      - {{TENANT_CODE_DIR}}:/var/www/html:rw
+      - tenant_runtime:/var/www/html/runtime
+      - {{DOCKER_DIR}}/cron/tenant.crontab:/etc/cron.d/tenant:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+      app:
+        condition: service_started

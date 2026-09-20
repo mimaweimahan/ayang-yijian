@@ -1,0 +1,653 @@
+{include file="public/header" /}
+<style>
+    .td-hidden-txt {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    .layui-table td, .layui-table th {
+        min-width: 10px;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" action="{:url('admin/Member/userList')}">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="nickname" placeholder="请输入用户账号/昵称/邀请码" autocomplete="off"
+                                   class="layui-input" value="{$nickname}">
+                        </div>
+                        {notempty name='agent'}
+                        <div class="layui-inline layui-show-xs-block">
+                            <select name="ag_id">
+                                <option value="0">请选择下级代理</option>
+                                {foreach name="agent" item="vo" key="ko"}
+                                <option value="{$ko}" {if condition="$ag_id eq $ko" }selected{
+                                /if}>{$vo}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        {/notempty}
+                        <div class="layui-inline layui-show-xs-block">
+                            <select name="type">
+                                <option value="0">请选择用户类型</option>
+                                <option value="1" {eq name="type" value="1" }selected{
+                                /eq}>测试用户</option>
+                                <option value="2" {eq name="type" value="2" }selected{
+                                /eq}>正式用户</option>
+                                <option value="3" {eq name="type" value="3" }selected{
+                                /eq}>代理用户</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <select name="status">
+                                <option value="0">请选择状态</option>
+                                <option value="1" {eq name="status" value="1" }selected{
+                                /eq}>启用</option>
+                                <option value="2" {eq name="status" value="2" }selected{
+                                /eq}>禁用</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="start_time" placeholder="开始时间" autocomplete="off" readonly
+                                   id="start_time" value="{$start_time}" class="layui-input">
+                        </div>
+
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="login_ip" placeholder="请输入登录ip" autocomplete="off"
+                                   class="layui-input" value="{$login_ip}">
+                        </div>
+
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-header">
+                    <button class="layui-btn layui-btn-danger" onclick="disAll()">批量禁用</button>
+                    <button class="layui-btn" onclick="xadmin.open('添加会员','{:url(\'admin/Member/userAdd\')}',550,500)">
+                        <i class="layui-icon"></i>添加会员
+                    </button>
+                    <span style="float: right">共有数据：{$list->total()} 条</span>
+                </div>
+                <div class="layui-card-body" style="overflow-x: auto">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th width="10px">
+                                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">
+                            </th>
+                            <th width="40px">ID</th>
+                            <th>基础信息</th>
+                            <th>账号信息</th>
+                            <th>钱包信息</th>
+                            <th>任务情况</th>
+                            <th>重置任务次数</th>
+                            <!--<th>邀请码</th>-->
+                            <th>登录信息</th>
+                            <th>注册时间</th>
+                            <th width="230px">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach name="list" item="vo"}
+                        <tr>
+                            <td  style="width:10px;">
+                                <input type="checkbox" name="uid" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>
+                                <!--邮箱：{$vo.email}<br>-->
+                                用户名：{$vo.username}<br>
+                                昵称：{$vo.nickname}<br>
+                                邀请码：{$vo.invite_code|default=""}<br>
+                                等级：{$vo.level_name}<br>
+
+                               
+                            </td>
+                            <td>
+                                类型：<span id="type{$vo.id}">{$vo.type}</span><br>
+								等级：{$vo.level_name}<br>
+								上级：{$parent[$vo.pid]|default="暂无"}({$vo.pid})<br>
+								代理：{$parent[$vo.agent_id]|default="暂无"}({$vo.agent_id})
+<!--                                状态：<span id="status{$vo.id}">{$vo.status_txt}</span><br>
+                                交易：<span id="trade{$vo.id}">{$vo.trade_txt}</span><br>
+                                提现：<span id="withdrawal{$vo.id}">{$vo.withdrawal_status_text}</span><br> -->
+                                <!-- 信用：{$vo.credit_score} -->
+                            </td>
+                            <td>
+                                可用资金：<span id="balance{$vo.id}">{$vo.balance}</span><br>
+<!--                                冻结资金：{$vo.freeze_balance}<br>
+                                累计充值：<span id="recharge{$vo.id}">{$vo.recharge}</span><br>
+                                累计提现：{$vo.withdraw}<br>
+                                累计佣金：{$vo.commission} -->
+                            </td>
+                            <td>{$vo.order_total}-{$vo.user_order}</td>
+                            <td>{$vo.user_repeat}</td>
+                            <!--<td>{$vo.invite_code}</td>-->
+                            <td>
+                                登录时间：{$vo.login_time}<br>
+                                登录ip：
+                                {if $vo.ips>1}
+                                <span style="color:red;">{$vo.login_ip}({$vo.ips})</span>
+                                {else}
+                                {$vo.login_ip}
+                                {/if}
+
+                                <br>
+                                登录地址：<span class="login-ip-address-show" data-login-ip="{$vo.login_ip}"></span>
+                            </td>
+                            <td>{$vo.create_time}</td>
+							
+							
+
+
+							      
+
+                            <td class="td-manage" style="padding: 10px 5px">
+							<div class="layui-collapse">
+							  <div class="layui-colla-item">
+								<h2 class="layui-colla-title">点击折叠按钮</h2>
+								<div class="layui-colla-content">
+                                <a class="layui-btn layui-btn-mini" href="javascript:;"
+                                   onclick="xadmin.open('编辑会员','{:url(\'admin/Member/userAdd\',[\'id\'=>$vo[\'id\']])}',550,400)">
+                                    基本资料
+                                </a>
+                                <a class="layui-btn layui-btn-mini layui-btn-normal"
+                                   href="javascript:;" onclick="balanceChange('{$vo.id}')">
+                                    加扣款
+                                </a>
+                                <hr>
+                                <a class="layui-btn layui-btn-mini layui-btn-normal"
+                                   href="javascript:;"
+                                   onclick="xadmin.open('团队信息','{:url(\'admin/Member/team\',[\'pid\'=>$vo[\'id\']])}',1300)">
+                                    查看团队
+                                </a>
+                                <a class="layui-btn layui-btn-mini layui-btn-warm" data-num="{$vo.order_num}"
+                                   href="javascript:;" onclick="resetOrder(this,'{$vo.id}')">
+                                    重置任务量
+                                </a>
+								<hr>
+                                <a class="layui-btn layui-btn-mini layui-btn-normal" href="javascript:;"
+                                   onclick="xadmin.open('钱包明细','{:url(\'admin/Finance/wallet\',[\'uid\'=>$vo[\'id\']])}',1300)">
+                                    账变数据
+                                </a>
+                                
+                                <a class="layui-btn layui-btn-mini layui-btn-warm"
+                                   href="javascript:;" onclick="changePass('{$vo.id}')">
+                                    密码修改
+                                </a>
+								<hr>
+                                <a class="layui-btn layui-btn-mini layui-btn-danger"
+                                   href="javascript:;" data-status="{$vo.status}"
+                                   onclick="userDisable(this,0,'{$vo.id}')">
+                                    账号{eq name='vo.status' value='1'}禁用{else/}启用{/eq}
+                                </a>
+                                <a class="layui-btn layui-btn-mini layui-btn-danger"
+                                   href="javascript:;" data-status="{$vo.trade_status}"
+                                   onclick="userDisable(this,1,'{$vo.id}')">
+                                    交易{eq name='vo.trade_status' value='1'}禁用{else/}启用{/eq}
+                                </a>
+                                 <hr>
+                                <a class="layui-btn layui-btn-mini layui-btn-danger"
+                                   href="javascript:;" data-status="{$vo.withdrawal_status}"
+                                   onclick="changeWithdrawalStatus(this,'{$vo.id}')">
+                                    提现{eq name='vo.trade_status' value='1'}禁用{else/}启用{/eq}
+                                </a>
+
+
+                                
+                                <a class="layui-btn layui-btn-mini layui-btn-danger"
+                                   href="javascript:;" onclick="deleteUser('{$vo.id}')">
+                                    删除用户
+                                </a>
+								<hr>
+                                {eq name='vo.is_agent' value='0'}
+                               
+                                <a class="layui-btn layui-btn-mini layui-btn-danger"
+                                   href="javascript:;" data-type="{$vo.is_test}"
+                                   onclick="typeChange(this,0,'{$vo.id}')">
+                                    设为{eq name='vo.is_test' value='1'}正式{else/}测试{/eq}
+                                </a>
+                                 
+                                <a class="layui-btn layui-btn-mini layui-btn-danger"
+                                   href="javascript:;" data-type="{$vo.is_agent}"
+                                   onclick="typeChange(this,1,'{$vo.id}')">
+                                    设为{eq name='vo.is_agent' value='1'}普通{else/}代理{/eq}
+                                </a>
+								<hr>
+                                {/eq}
+                                 <a class="layui-btn layui-btn-mini layui-btn-normal"
+                                   href="javascript:;" onclick="recharge('{$vo.id}')">
+                                    充值
+                                </a>
+								</div>
+								  </div>
+								</div>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body">
+                    <div class="page">
+                        {$list|raw}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    layui.use(['form', 'laydate'], function () {
+        var laydate = layui.laydate;
+        var form = layui.form;
+        laydate.render({
+            elem: '#start_time', //指定元素
+            type: 'datetime',
+        });
+        // 监听全选
+        form.on('checkbox(checkall)', function (data) {
+            if (data.elem.checked) {
+                $('tbody input').prop('checked', true);
+            } else {
+                $('tbody input').prop('checked', false);
+            }
+            form.render('checkbox');
+        });
+    });
+
+    $(function(){
+        $(".login-ip-address-show").each(function(index,item){
+            let loginIp = $(this).data('login-ip');
+            let obj = $(this)
+            $.ajax({
+                url: '{:url("admin/PublicApi/getIpAddress")}',
+                type: 'post',
+                data: {'ip': loginIp},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status === 200) {
+                        obj.html(res.data)
+                    }
+                },
+                error: function () {
+                    // layer.close(index);
+                    // tipAction(2, '系统繁忙');
+                }
+            });
+        });
+
+    });
+    function balanceChange(id) {
+        layer.open({
+            type: 1,
+            title: '加扣款',
+            content: '<div style="padding: 10px;"><input class="layui-input" id="balance_change" type="text" autocomplete="off"></div>',
+            btn: ['充值', '扣款', '取消'],
+            btnAlign: 'c',
+            yes: function (index) {
+                var price = parseFloat($('#balance_change').val());
+                var balance = parseFloat($('#balance' + id + '').text()) + price;
+                var recharge = parseFloat($('#recharge' + id + '').text()) + price;
+                $.ajax({
+                    url: '{:url("admin/Member/balanceChange")}',
+                    type: 'post',
+                    data: {'dire': 1, 'price': price, 'uid': id},
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status == '200') {
+                            layer.close(index);
+                            $('#balance' + id + '').text(balance);
+                            $('#recharge' + id + '').text(recharge);
+                            tipAction(1, res.msg);
+                        } else
+                            tipAction(2, res.msg);
+                    },
+                    error: function () {
+                        // layer.close(index);
+                        tipAction(2, '系统繁忙');
+                    }
+                });
+            },
+            btn2: function (index) {
+                var price = parseFloat($('#balance_change').val());
+                var balance = parseFloat($('#balance' + id + '').text()) - price;
+                var recharge = parseFloat($('#recharge' + id + '').text()) - price;
+                $.ajax({
+                    url: '{:url("admin/Member/balanceChange")}',
+                    type: 'post',
+                    data: {'dire': 2, 'price': price, 'uid': id},
+                    dataType: 'json',
+                    success: function (res) {
+                        // layer.close(index)
+                        if (res.status == '200') {
+                            layer.close(index);
+                            $('#balance' + id + '').text(balance);
+                            $('#recharge' + id + '').text(recharge);
+                            tipAction(1, res.msg);
+                        } else
+                            tipAction(2, res.msg);
+                    },
+                    error: function () {
+                        // layer.close(index);
+                        tipAction(2, '系统繁忙');
+                    }
+                });
+                return false;
+            }
+        });
+    }
+    
+     function recharge(id) {
+        layer.open({
+            type: 1,
+            title: '充值',
+            content: '<div style="padding: 10px;width:300px;">充值金额：<input class="layui-input" id="change_money" type="text" autocomplete="off">手续费：<input class="layui-input" id="change_fee" type="text" autocomplete="off">备注：<textarea  class="layui-textarea" id="beizhu" type="text" autocomplete="off"></textarea></div>',
+            btn: ['确定', '取消'],
+            btnAlign: 'c',
+            yes: function (index) {
+                var money = parseFloat($('#change_money').val());
+                var fee = parseFloat($('#change_fee').val());
+                 var beizhu = $('#beizhu').val();
+                var balance = parseFloat($('#balance' + id + '').text()) + money;
+                var recharge = parseFloat($('#recharge' + id + '').text()) + money;
+                $.ajax({
+                    url: '{:url("admin/Member/balanceChange")}',
+                    type: 'post',
+                    data: {'dire': 1, 'money': money, 'uid': id, 'fee': fee, 'uid': beizhu},
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status == '200') {
+                            layer.close(index);
+                            $('#balance' + id + '').text(balance);
+                            $('#recharge' + id + '').text(recharge);
+                            tipAction(1, res.msg);
+                        } else
+                            tipAction(2, res.msg);
+                    },
+                    error: function () {
+                        // layer.close(index);
+                        tipAction(2, '系统繁忙');
+                    }
+                });
+            },
+            
+        });
+    }
+
+    //删除用户
+    function deleteUser(id) {
+        layer.confirm('确定删除用户！', function () {
+            $.ajax({
+                url: '{:url("admin/Member/deleteUser")}',
+                type: 'post',
+                data: {"id": id},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                        location.reload();
+                    } else
+                        tipAction(2, res.msg);
+                }
+            });
+        })
+    }
+
+    //重置
+    function resetOrder(obj, id) {
+        layer.confirm('是否要重置今日任务量', function () {
+            $.ajax({
+                url: '{:url("admin/Member/resetOrder")}',
+                type: 'post',
+                data: {"id": id},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                        location.reload();
+                        // $(obj).parent().prevAll().eq(3).text('0-' + $(obj).data('num'));
+                    } else
+                        tipAction(2, res.msg);
+                }
+            });
+        })
+    }
+
+    //批量禁用
+    function disAll() {
+        layer.confirm('确认要禁用吗？', function (index) {
+            //发异步删除数据
+            var id_arr = [];
+            $('input[name="uid"]:checked').each(function () {
+                id_arr.push(this.value);
+            });
+            if (id_arr.length > 0) {
+                $.ajax({
+                    url: '{:url("admin/Member/userDisable")}',
+                    type: 'post',
+                    data: {'ids': id_arr, 'type': 0, 'status': 2},
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status == '200') {
+                            tipAction(1, res.msg);
+                        } else {
+                            tipAction(2, res.msg);
+                        }
+                    },
+                    error: function () {
+                        tipAction(2, '系统繁忙');
+                    }
+                });
+            }
+            layer.close(index);
+        });
+    }
+
+    //状态禁用
+    function userDisable(obj, type, id) {
+        var txt, status_txt, status_new, status_txt_new;
+        var status = $(obj).attr('data-status');
+        if (status == 1) {
+            status_txt = '禁用';
+            status_new = 2;
+            status_txt_new = '启用';
+        } else {
+            status_txt = '启用';
+            status_new = 1;
+            status_txt_new = '禁用';
+        }
+        if (type)
+            txt = '是否要设置交易状态：' + status_txt;
+        else
+            txt = '是否要设置用户状态：' + status_txt;
+        layer.confirm(txt, function (index) {
+            //发异步删除数据
+            $.ajax({
+                url: '{:url("admin/Member/userDisable")}',
+                type: 'post',
+                data: {'id': id, 'type': type, 'status': status_new},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        if (type) {
+                            $(obj).attr('data-status', status_new).text('交易' + status_txt_new);
+                            $('#trade' + id + '').text(status_txt);
+                        } else {
+                            $(obj).attr('data-status', status_new).text('账号' + status_txt_new);
+                            $('#status' + id + '').text(status_txt);
+                        }
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+        });
+    }
+
+    //状态禁用
+    function changeWithdrawalStatus(obj, id) {
+        var txt, status_txt, status_new;
+        var status = $(obj).attr('data-status');
+        if (status == 1) {
+            status_txt = '禁用';
+            status_new = 0;
+        } else {
+            status_txt = '启用';
+            status_new = 1;
+        }
+        txt = '是否要设置提现状态：' + status_txt;
+        layer.confirm(txt, function (index) {
+            $.ajax({
+                url: '{:url("admin/Member/changeWithdrawal")}',
+                type: 'post',
+                data: {'id': id, 'status': status_new},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                        location.reload()
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+        });
+    }
+
+
+    function typeChange(obj, type, id) {
+        var txt, status_txt, status_new, status_txt_new;
+        var status = $(obj).attr('data-type');
+        if (status == 1) {
+            if (type) {
+                status_txt = '普通用户';
+                status_txt_new = '代理';
+            } else {
+                status_txt = '正式用户';
+                status_txt_new = '测试';
+            }
+            status_new = 0;
+        } else {
+            if (type) {
+                status_txt = '代理用户';
+                status_txt_new = '普通';
+            } else {
+                status_txt = '测试用户';
+                status_txt_new = '正式';
+            }
+            status_new = 1;
+        }
+        if (type)
+            txt = '是否设置为：' + status_txt;
+        else
+            txt = '是否设置为：' + status_txt;
+        layer.confirm(txt, function (index) {
+            //发异步删除数据
+            $.ajax({
+                url: '{:url("admin/Member/typeChange")}',
+                type: 'post',
+                data: {'id': id, 'type': type, 'status': status_new},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        if (type) {
+                            $(obj).prev().prev().remove();
+                            $(obj).prev().remove();
+                            $(obj).remove();
+                        } else {
+                            $(obj).attr('data-type', status_new).text('设为' + status_txt_new);
+                        }
+                        $('#type' + id + '').text(status_txt);
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+        });
+    }
+
+    //密码修改
+    function changePass(id) {
+        layer.open({
+            type: 1,
+            title: '密码修改',
+            content: '<div style="padding: 15px 20px 0 0"><div class="layui-form-item"><label for="password" class="layui-form-label">登录密码</label><div class="layui-input-inline">' +
+                '<input type="text" id="password" autocomplete="off" class="layui-input" value=""></div></div>' +
+                '<div class="layui-form-item"><label for="deal_pass" class="layui-form-label">取款密码</label><div class="layui-input-inline">' +
+                '<input type="text" id="deal_pass" autocomplete="off" class="layui-input" value=""></div></div></div>',
+            btn: ['确定', '取消'],
+            yes: function (index) {
+                var password = $('#password').val();
+                var deal_pass = $('#deal_pass').val();
+                if (password == '' && deal_pass == '') {
+                    tipAction(2, '无任何修改');
+                } else {
+                    $.ajax({
+                        url: '{:url("admin/Member/changePass")}',
+                        type: 'post',
+                        data: {'id': id, 'password': password, 'deal_pass': deal_pass},
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.status == '200') {
+                                tipAction(1, res.msg);
+                                layer.close(index);
+                            } else {
+                                tipAction(2, res.msg);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>
+<style>
+	
+	/* 修改标题背景颜色和字体大小 */
+	.layui-colla-title {
+	  background-color: #f2f2f2; /* 背景颜色 */
+	  color: #333; /* 字体颜色 */
+	  font-size: 16px; /* 字体大小 */
+	  cursor: pointer; /* 鼠标悬停时显示手形图标 */
+	}
+	 
+	/* 修改内容区域的背景颜色和边距 */
+	.layui-colla-content {
+	  background-color: #fff; /* 背景颜色 */
+	  padding: 10px; /* 内边距 */
+	  border: 1px solid #ddd; /* 边框 */
+	}
+	 
+	/* 为整个折叠面板添加圆角和阴影 */
+	.layui-collapse {
+	  border-radius: 5px; /* 圆角 */
+	  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 阴影 */
+	}
+</style>
+{include file="public/footer" /}

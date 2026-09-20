@@ -1,0 +1,149 @@
+{include file="public/header" /}
+<style>
+    .upload-span {
+        width: 20%;
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .upload-more {
+        width: 100%;
+        height: 150px;
+    }
+
+    .upload-close {
+        position: absolute;
+        background: white;
+        padding: 5px;
+        right: 0;
+        cursor: pointer;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 80%;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">注册协议-英语</label>
+                <div class="layui-input-block">
+                    <textarea name="register_en" id="register_en" class="layui-textarea" placeholder="请输入注册协议-英语">{$info.register_en|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">注册协议-繁体</label>
+                <div class="layui-input-block">
+                    <textarea name="register_zh" id="register_zh" class="layui-textarea" placeholder="请输入注册协议-繁体">{$info.register_zh|default=''}</textarea>
+                </div>
+            </div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">注册协议-希伯来语</label>
+			    <div class="layui-input-block">
+			        <textarea name="register_he" id="register_he" class="layui-textarea" placeholder="请输入注册协议-希伯来语">{$info.register_he|default=''}</textarea>
+			    </div>
+			</div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label">注册协议-阿拉伯语</label>
+			    <div class="layui-input-block">
+			        <textarea name="register_ar" id="register_ar" class="layui-textarea" placeholder="请输入注册协议-阿拉伯语">{$info.register_ar|default=''}</textarea>
+			    </div>
+			</div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label">注册协议-西班牙语</label>
+			    <div class="layui-input-block">
+			        <textarea name="register_es" id="register_es" class="layui-textarea" placeholder="请输入注册协议-西班牙语">{$info.register_es|default=''}</textarea>
+			    </div>
+			</div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label">注册协议-葡萄牙语</label>
+			    <div class="layui-input-block">
+			        <textarea name="register_pt" id="register_pt" class="layui-textarea" placeholder="请输入注册协议-葡萄牙语">{$info.register_pt|default=''}</textarea>
+			    </div>
+			</div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label">注册协议-荷兰语</label>
+			    <div class="layui-input-block">
+			        <textarea name="register_nl" id="register_nl" class="layui-textarea" placeholder="请输入注册协议-荷兰语">{$info.register_nl|default=''}</textarea>
+			    </div>
+			</div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label">注册协议-法语</label>
+			    <div class="layui-input-block">
+			        <textarea name="register_fr" id="register_fr" class="layui-textarea" placeholder="请输入注册协议-法语">{$info.register_fr|default=''}</textarea>
+			    </div>
+			</div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label">注册协议-德语</label>
+			    <div class="layui-input-block">
+			        <textarea name="register_de" id="register_de" class="layui-textarea" placeholder="请输入注册协议-德语">{$info.register_de|default=''}</textarea>
+			    </div>
+			</div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="application/javascript">
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form;
+        var layedit = layui.layedit;
+        var register_en = layedit.build('register_en', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var register_zh = layedit.build('register_zh', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+		var register_he = layedit.build('register_he', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var register_ar = layedit.build('register_ar', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var register_es = layedit.build('register_es', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var register_pt = layedit.build('register_pt', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var register_nl = layedit.build('register_nl', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var register_fr = layedit.build('register_fr', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var register_de = layedit.build('register_de', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+        //监听提交
+        form.on('submit(add)', function (data) {
+            data.field.register_en = layedit.getContent(register_en);
+            data.field.register_zh = layedit.getContent(register_zh);
+			
+			data.field.register_he = layedit.getContent(register_he);
+			data.field.register_ar = layedit.getContent(register_ar);
+			data.field.register_es = layedit.getContent(register_es);
+			data.field.register_pt = layedit.getContent(register_pt);
+			data.field.register_nl = layedit.getContent(register_nl);
+			data.field.register_fr = layedit.getContent(register_fr);
+			data.field.register_de = layedit.getContent(register_de);
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/System/configSubmit")}',
+                type: 'post',
+                data: {'config': data.field, 'id': 5},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙,请重试');
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{include file="public/footer" /}

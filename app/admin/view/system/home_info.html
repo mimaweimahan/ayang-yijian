@@ -1,0 +1,811 @@
+{include file="public/header" /}
+<style>
+    .upload-span {
+        width: 20%;
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .upload-more {
+        width: 100%;
+        height: 150px;
+    }
+
+    .upload-close {
+        position: absolute;
+        background: white;
+        padding: 5px;
+        right: 0;
+        cursor: pointer;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 80%;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+
+            <div class="layui-tab layui-tab-card layui-tab-brief" >
+                <ul class="layui-tab-title">
+                    <li class="layui-this" lay-id="11">弹窗图片</li>
+                    <li lay-id="22">关于我们</li>
+                    <li lay-id="33">注册消息</li>
+                    <li lay-id="44">充值消息</li>
+                    <li lay-id="55">我们的服务</li>
+                    <li lay-id="66">公告中心</li>
+                    <li lay-id="77">帮助中心</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">弹窗-英文</label>
+                            <div class="layui-input-inline upload">
+                                <div class="layui-upload-drag {notempty name='info.pop_en'}layui-hide{/notempty}">
+                                    <i class="layui-icon" style="font-size: 30px"></i>
+                                    <p>点击上传，或将文件拖拽到此处</p>
+                                </div>
+                                <div class="{empty name='info.pop_en'}layui-hide{/empty}" title="上传弹窗-越南">
+                                    <img src="{$info.pop_en|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+                                         width="100%">
+                                </div>
+                                <input type="hidden" name="pop_en" value="{$info.pop_en|default=''}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">弹窗-繁体</label>
+                            <div class="layui-input-inline upload">
+                                <div class="layui-upload-drag {notempty name='info.pop_zh'}layui-hide{/notempty}">
+                                    <i class="layui-icon" style="font-size: 30px"></i>
+                                    <p>点击上传，或将文件拖拽到此处</p>
+                                </div>
+                                <div class="{empty name='info.pop_zh'}layui-hide{/empty}" title="上传弹窗-中文">
+                                    <img src="{$info.pop_zh|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+                                         width="100%">
+                                </div>
+                                <input type="hidden" name="pop_zh" value="{$info.pop_zh|default=''}">
+                            </div>
+                        </div>
+						
+						<div class="layui-form-item">
+						    <label class="layui-form-label">弹窗-希伯来语</label>
+						    <div class="layui-input-inline upload">
+						        <div class="layui-upload-drag {notempty name='info.pop_he'}layui-hide{/notempty}">
+						            <i class="layui-icon" style="font-size: 30px"></i>
+						            <p>点击上传，或将文件拖拽到此处</p>
+						        </div>
+						        <div class="{empty name='info.pop_he'}layui-hide{/empty}" title="上传弹窗-希伯来语">
+						            <img src="{$info.pop_he|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+						                 width="100%">
+						        </div>
+						        <input type="hidden" name="pop_he" value="{$info.pop_he|default=''}">
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">弹窗-阿拉伯语</label>
+						    <div class="layui-input-inline upload">
+						        <div class="layui-upload-drag {notempty name='info.pop_ar'}layui-hide{/notempty}">
+						            <i class="layui-icon" style="font-size: 30px"></i>
+						            <p>点击上传，或将文件拖拽到此处</p>
+						        </div>
+						        <div class="{empty name='info.pop_ar'}layui-hide{/empty}" title="上传弹窗-阿拉伯语">
+						            <img src="{$info.pop_ar|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+						                 width="100%">
+						        </div>
+						        <input type="hidden" name="pop_ar" value="{$info.pop_ar|default=''}">
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">弹窗-西班牙语</label>
+						    <div class="layui-input-inline upload">
+						        <div class="layui-upload-drag {notempty name='info.pop_es'}layui-hide{/notempty}">
+						            <i class="layui-icon" style="font-size: 30px"></i>
+						            <p>点击上传，或将文件拖拽到此处</p>
+						        </div>
+						        <div class="{empty name='info.pop_es'}layui-hide{/empty}" title="上传弹窗-西班牙语">
+						            <img src="{$info.pop_es|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+						                 width="100%">
+						        </div>
+						        <input type="hidden" name="pop_es" value="{$info.pop_es|default=''}">
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">弹窗-葡萄牙语</label>
+						    <div class="layui-input-inline upload">
+						        <div class="layui-upload-drag {notempty name='info.pop_pt'}layui-hide{/notempty}">
+						            <i class="layui-icon" style="font-size: 30px"></i>
+						            <p>点击上传，或将文件拖拽到此处</p>
+						        </div>
+						        <div class="{empty name='info.pop_pt'}layui-hide{/empty}" title="上传弹窗-葡萄牙语">
+						            <img src="{$info.pop_pt|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+						                 width="100%">
+						        </div>
+						        <input type="hidden" name="pop_pt" value="{$info.pop_pt|default=''}">
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">弹窗-荷兰语</label>
+						    <div class="layui-input-inline upload">
+						        <div class="layui-upload-drag {notempty name='info.pop_nl'}layui-hide{/notempty}">
+						            <i class="layui-icon" style="font-size: 30px"></i>
+						            <p>点击上传，或将文件拖拽到此处</p>
+						        </div>
+						        <div class="{empty name='info.pop_nl'}layui-hide{/empty}" title="上传弹窗-荷兰语">
+						            <img src="{$info.pop_nl|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+						                 width="100%">
+						        </div>
+						        <input type="hidden" name="pop_nl" value="{$info.pop_nl|default=''}">
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">弹窗-法语</label>
+						    <div class="layui-input-inline upload">
+						        <div class="layui-upload-drag {notempty name='info.pop_fr'}layui-hide{/notempty}">
+						            <i class="layui-icon" style="font-size: 30px"></i>
+						            <p>点击上传，或将文件拖拽到此处</p>
+						        </div>
+						        <div class="{empty name='info.pop_fr'}layui-hide{/empty}" title="上传弹窗-法语">
+						            <img src="{$info.pop_fr|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+						                 width="100%">
+						        </div>
+						        <input type="hidden" name="pop_fr" value="{$info.pop_fr|default=''}">
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">弹窗-德语</label>
+						    <div class="layui-input-inline upload">
+						        <div class="layui-upload-drag {notempty name='info.pop_de'}layui-hide{/notempty}">
+						            <i class="layui-icon" style="font-size: 30px"></i>
+						            <p>点击上传，或将文件拖拽到此处</p>
+						        </div>
+						        <div class="{empty name='info.pop_de'}layui-hide{/empty}" title="上传弹窗-德语">
+						            <img src="{$info.pop_de|default=''}" alt="上传成功后渲染" style="max-width: 200px"
+						                 width="100%">
+						        </div>
+						        <input type="hidden" name="pop_de" value="{$info.pop_de|default=''}">
+						    </div>
+						</div>
+						
+						
+                    </div>
+                    <div class="layui-tab-item">
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关于我们-英语</label>
+                            <div class="layui-input-block">
+                                <textarea name="about_us_en" id="about_us_en" class="layui-textarea"
+                                          placeholder="请输入关于我们-英语">{$info.about_us_en|default=''}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关于我们-繁体</label>
+                            <div class="layui-input-block">
+                                <textarea name="about_us_zh" id="about_us_zh" class="layui-textarea"
+                                          placeholder="请输入关于我们-繁体">{$info.about_us_zh|default=''}</textarea>
+                            </div>
+                        </div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">关于我们-希伯来语</label>
+						    <div class="layui-input-block">
+						        <textarea name="about_us_he" id="about_us_he" class="layui-textarea"
+						                  placeholder="请输入关于我们-希伯来语">{$info.about_us_he|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">关于我们-阿拉伯语</label>
+						    <div class="layui-input-block">
+						        <textarea name="about_us_ar" id="about_us_ar" class="layui-textarea"
+						                  placeholder="请输入关于我们-阿拉伯语">{$info.about_us_ar|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">关于我们-西班牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="about_us_es" id="about_us_es" class="layui-textarea"
+						                  placeholder="请输入关于我们-西班牙语">{$info.about_us_es|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">关于我们-葡萄牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="about_us_pt" id="about_us_pt" class="layui-textarea"
+						                  placeholder="请输入关于我们-葡萄牙语">{$info.about_us_pt|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">关于我们-荷兰语</label>
+						    <div class="layui-input-block">
+						        <textarea name="about_us_nl" id="about_us_nl" class="layui-textarea"
+						                  placeholder="请输入关于我们-荷兰语">{$info.about_us_nl|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">关于我们-法语</label>
+						    <div class="layui-input-block">
+						        <textarea name="about_us_fr" id="about_us_fr" class="layui-textarea"
+						                  placeholder="请输入关于我们-法语">{$info.about_us_fr|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">关于我们-德语</label>
+						    <div class="layui-input-block">
+						        <textarea name="about_us_de" id="about_us_de" class="layui-textarea"
+						                  placeholder="请输入关于我们-德语">{$info.about_us_de|default=''}</textarea>
+						    </div>
+						</div>
+                    </div>
+                    <div class="layui-tab-item">
+
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">注册消息-英语</label>
+                            <div class="layui-input-block">
+                                <textarea name="register_en" class="layui-textarea" placeholder="请输入注册消息-英语">{$info.register_en|default=''}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">注册消息-繁体</label>
+                            <div class="layui-input-block">
+                                <textarea name="register_zh" class="layui-textarea" placeholder="请输入注册消息-繁体">{$info.register_zh|default=''}</textarea>
+                            </div>
+                        </div>
+						
+						<div class="layui-form-item">
+						    <label class="layui-form-label">注册消息-希伯来语</label>
+						    <div class="layui-input-block">
+						        <textarea name="register_he" class="layui-textarea" placeholder="请输入注册消息-希伯来语">{$info.register_he|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">注册消息-阿拉伯语</label>
+						    <div class="layui-input-block">
+						        <textarea name="register_ar" class="layui-textarea" placeholder="请输入注册消息-阿拉伯语">{$info.register_ar|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">注册消息-西班牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="register_es" class="layui-textarea" placeholder="请输入注册消息-西班牙语">{$info.register_es|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">注册消息-葡萄牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="register_pt" class="layui-textarea" placeholder="请输入注册消息-葡萄牙语">{$info.register_pt|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">注册消息-荷兰语</label>
+						    <div class="layui-input-block">
+						        <textarea name="register_nl" class="layui-textarea" placeholder="请输入注册消息-荷兰语">{$info.register_nl|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">注册消息-法语</label>
+						    <div class="layui-input-block">
+						        <textarea name="register_fr" class="layui-textarea" placeholder="请输入注册消息-法语">{$info.register_fr|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">注册消息-德语</label>
+						    <div class="layui-input-block">
+						        <textarea name="register_de" class="layui-textarea" placeholder="请输入注册消息-德语">{$info.register_de|default=''}</textarea>
+						    </div>
+						</div>
+                    </div>
+                    <div class="layui-tab-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">充值消息-英语</label>
+                            <div class="layui-input-block">
+                                <textarea name="recharge_en" class="layui-textarea" placeholder="请输入充值消息-英语">{$info.recharge_en|default=''}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">充值消息-繁体</label>
+                            <div class="layui-input-block">
+                                <textarea name="recharge_zh" class="layui-textarea" placeholder="请输入充值消息-繁体">{$info.recharge_zh|default=''}</textarea>
+                            </div>
+                        </div>
+						
+						<div class="layui-form-item">
+						    <label class="layui-form-label">充值消息-希伯来语</label>
+						    <div class="layui-input-block">
+						        <textarea name="recharge_he" class="layui-textarea" placeholder="请输入充值消息-希伯来语">{$info.recharge_he|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">充值消息-阿拉伯语</label>
+						    <div class="layui-input-block">
+						        <textarea name="recharge_ar" class="layui-textarea" placeholder="请输入充值消息-阿拉伯语">{$info.recharge_ar|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">充值消息-西班牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="recharge_es" class="layui-textarea" placeholder="请输入充值消息-西班牙语">{$info.recharge_es|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">充值消息-葡萄牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="recharge_pt" class="layui-textarea" placeholder="请输入充值消息-葡萄牙语">{$info.recharge_pt|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">充值消息-荷兰语</label>
+						    <div class="layui-input-block">
+						        <textarea name="recharge_nl" class="layui-textarea" placeholder="请输入充值消息-荷兰语">{$info.recharge_nl|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">充值消息-法语</label>
+						    <div class="layui-input-block">
+						        <textarea name="recharge_fr" class="layui-textarea" placeholder="请输入充值消息-法语">{$info.recharge_fr|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">充值消息-德语</label>
+						    <div class="layui-input-block">
+						        <textarea name="recharge_de" class="layui-textarea" placeholder="请输入充值消息-德语">{$info.recharge_de|default=''}</textarea>
+						    </div>
+						</div>
+                    </div>
+                    <div class="layui-tab-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">我们的服务-英语</label>
+                            <div class="layui-input-block">
+                                <textarea name="our_services_en" id="our_services_en" class="layui-textarea"
+                                          placeholder="请输入我们的服务-英语">{$info.our_services_en|default=''}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">我们的服务-繁体</label>
+                            <div class="layui-input-block">
+                                <textarea name="our_services_zh" id="our_services_zh" class="layui-textarea"
+                                          placeholder="请输入我们的服务-繁体">{$info.our_services_zh|default=''}</textarea>
+                            </div>
+                        </div>
+						
+						<div class="layui-form-item">
+						    <label class="layui-form-label">我们的服务-希伯来语</label>
+						    <div class="layui-input-block">
+						        <textarea name="our_services_he" id="our_services_he" class="layui-textarea"
+						                  placeholder="请输入我们的服务-希伯来语">{$info.our_services_he|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">我们的服务-阿拉伯语</label>
+						    <div class="layui-input-block">
+						        <textarea name="our_services_ar" id="our_services_ar" class="layui-textarea"
+						                  placeholder="请输入我们的服务-阿拉伯语">{$info.our_services_ar|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">我们的服务-西班牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="our_services_es" id="our_services_es" class="layui-textarea"
+						                  placeholder="请输入我们的服务-西班牙语">{$info.our_services_es|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">我们的服务-葡萄牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="our_services_pt" id="our_services_pt" class="layui-textarea"
+						                  placeholder="请输入我们的服务-葡萄牙语">{$info.our_services_pt|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">我们的服务-荷兰语</label>
+						    <div class="layui-input-block">
+						        <textarea name="our_services_nl" id="our_services_nl" class="layui-textarea"
+						                  placeholder="请输入我们的服务-荷兰语">{$info.our_services_nl|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">我们的服务-法语</label>
+						    <div class="layui-input-block">
+						        <textarea name="our_services_fr" id="our_services_fr" class="layui-textarea"
+						                  placeholder="请输入我们的服务-法语">{$info.our_services_fr|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">我们的服务-德语</label>
+						    <div class="layui-input-block">
+						        <textarea name="our_services_de" id="our_services_de" class="layui-textarea"
+						                  placeholder="请输入我们的服务-德语">{$info.our_services_de|default=''}</textarea>
+						    </div>
+						</div>
+                    </div>
+
+                    <div class="layui-tab-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">公告中心-英语</label>
+                            <div class="layui-input-block">
+                                <textarea name="announcement_center_en" id="announcement_center_en" class="layui-textarea"
+                                          placeholder="请输入公告中心-英语">{$info.announcement_center_en|default=''}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">公告中心-繁体</label>
+                            <div class="layui-input-block">
+                                <textarea name="announcement_center_zh" id="announcement_center_zh" class="layui-textarea"
+                                          placeholder="请输入公告中心-繁体">{$info.announcement_center_zh|default=''}</textarea>
+                            </div>
+                        </div>
+						
+						
+						<div class="layui-form-item">
+						    <label class="layui-form-label">公告中心-希伯来语</label>
+						    <div class="layui-input-block">
+						        <textarea name="announcement_center_he" id="announcement_center_he" class="layui-textarea"
+						                  placeholder="请输入公告中心-希伯来语">{$info.announcement_center_he|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">公告中心-阿拉伯语</label>
+						    <div class="layui-input-block">
+						        <textarea name="announcement_center_ar" id="announcement_center_ar" class="layui-textarea"
+						                  placeholder="请输入公告中心-阿拉伯语">{$info.announcement_center_ar|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">公告中心-西班牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="announcement_center_es" id="announcement_center_es" class="layui-textarea"
+						                  placeholder="请输入公告中心-西班牙语">{$info.announcement_center_es|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">公告中心-葡萄牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="announcement_center_pt" id="announcement_center_pt" class="layui-textarea"
+						                  placeholder="请输入公告中心-葡萄牙语">{$info.announcement_center_pt|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">公告中心-荷兰语</label>
+						    <div class="layui-input-block">
+						        <textarea name="announcement_center_nl" id="announcement_center_nl" class="layui-textarea"
+						                  placeholder="请输入公告中心-荷兰语">{$info.announcement_center_nl|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">公告中心-法语</label>
+						    <div class="layui-input-block">
+						        <textarea name="announcement_center_fr" id="announcement_center_fr" class="layui-textarea"
+						                  placeholder="请输入公告中心-法语">{$info.announcement_center_fr|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">公告中心-德语</label>
+						    <div class="layui-input-block">
+						        <textarea name="announcement_center_de" id="announcement_center_de" class="layui-textarea"
+						                  placeholder="请输入公告中心-德语">{$info.announcement_center_de|default=''}</textarea>
+						    </div>
+						</div>
+                    </div>
+
+                    <div class="layui-tab-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">帮助中心-英语</label>
+                            <div class="layui-input-block">
+                                <textarea name="help_en" id="help_en" class="layui-textarea"
+                                          placeholder="请输入帮助中心-英语">{$info.help_en|default=''}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">帮助中心-繁体</label>
+                            <div class="layui-input-block">
+                                <textarea name="help_zh" id="help_zh" class="layui-textarea"
+                                          placeholder="请输入帮助中心-繁体">{$info.help_zh|default=''}</textarea>
+                            </div>
+                        </div>
+						
+						<div class="layui-form-item">
+						    <label class="layui-form-label">帮助中心-希伯来语</label>
+						    <div class="layui-input-block">
+						        <textarea name="help_he" id="help_he" class="layui-textarea"
+						                  placeholder="请输入帮助中心-希伯来语">{$info.help_he|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">帮助中心-阿拉伯语</label>
+						    <div class="layui-input-block">
+						        <textarea name="help_ar" id="help_ar" class="layui-textarea"
+						                  placeholder="请输入帮助中心-阿拉伯语">{$info.help_ar|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">帮助中心-西班牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="help_es" id="help_es" class="layui-textarea"
+						                  placeholder="请输入帮助中心-西班牙语">{$info.help_es|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">帮助中心-葡萄牙语</label>
+						    <div class="layui-input-block">
+						        <textarea name="help_pt" id="help_pt" class="layui-textarea"
+						                  placeholder="请输入帮助中心-葡萄牙语">{$info.help_pt|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">帮助中心-荷兰语</label>
+						    <div class="layui-input-block">
+						        <textarea name="help_nl" id="help_nl" class="layui-textarea"
+						                  placeholder="请输入帮助中心-荷兰语">{$info.help_nl|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">帮助中心-法语</label>
+						    <div class="layui-input-block">
+						        <textarea name="help_fr" id="help_fr" class="layui-textarea"
+						                  placeholder="请输入帮助中心-法语">{$info.help_fr|default=''}</textarea>
+						    </div>
+						</div>
+						<div class="layui-form-item">
+						    <label class="layui-form-label">帮助中心-德语</label>
+						    <div class="layui-input-block">
+						        <textarea name="help_de" id="help_de" class="layui-textarea"
+						                  placeholder="请输入帮助中心-德语">{$info.help_de|default=''}</textarea>
+						    </div>
+						</div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="application/javascript">
+    layui.use(['upload', 'form', 'layedit'], function () {
+        var upload = layui.upload, form = layui.form;
+        var layedit = layui.layedit;
+        layedit.set({    //设置图片接口
+            uploadImage: {
+                url: '{:url("admin/Index/uploadEdit")}', //接口url
+                type: 'post'
+            }
+        });
+        var about_us_vi = layedit.build('about_us_vi', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+        var about_us_en = layedit.build('about_us_en', {hideTool: [ 'help', 'face']}); //建立编辑器
+        var about_us_zh = layedit.build('about_us_zh', {hideTool: [ 'help', 'face']}); //建立编辑器
+		
+		var about_us_he = layedit.build('about_us_he', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var about_us_ar = layedit.build('about_us_ar', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var about_us_es = layedit.build('about_us_es', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var about_us_pt = layedit.build('about_us_pt', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var about_us_nl = layedit.build('about_us_nl', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var about_us_fr = layedit.build('about_us_fr', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var about_us_de = layedit.build('about_us_de', {hideTool: [ 'help', 'face']}); //建立编辑器
+		
+		
+		
+        var our_services_en = layedit.build('our_services_en', {hideTool: [ 'help', 'face']}); //建立编辑器
+        var our_services_zh = layedit.build('our_services_zh', {hideTool: [ 'help', 'face']}); //建立编辑器
+		
+		var our_services_he = layedit.build('our_services_he', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var our_services_ar = layedit.build('our_services_ar', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var our_services_es = layedit.build('our_services_es', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var our_services_pt = layedit.build('our_services_pt', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var our_services_nl = layedit.build('our_services_nl', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var our_services_fr = layedit.build('our_services_fr', {hideTool: [ 'help', 'face']}); //建立编辑器
+		var our_services_de = layedit.build('our_services_de', {hideTool: [ 'help', 'face']}); //建立编辑器
+		
+		
+		
+		
+        var announcement_center_en = layedit.build('announcement_center_en', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var help_en = layedit.build('help_en', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var announcement_center_zh = layedit.build('announcement_center_zh', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+        var help_zh = layedit.build('help_zh', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+		
+		
+		var announcement_center_he = layedit.build('announcement_center_he', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var help_he = layedit.build('help_he', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+		var announcement_center_ar = layedit.build('announcement_center_ar', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var help_ar = layedit.build('help_ar', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+		var announcement_center_es = layedit.build('announcement_center_es', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var help_es = layedit.build('help_es', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+		var announcement_center_pt = layedit.build('announcement_center_pt', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var help_pt = layedit.build('help_pt', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+		var announcement_center_nl = layedit.build('announcement_center_nl', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var help_nl = layedit.build('help_nl', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+		var announcement_center_fr = layedit.build('announcement_center_fr', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var help_fr = layedit.build('help_fr', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		
+		var announcement_center_de = layedit.build('announcement_center_de', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+		var help_de = layedit.build('help_de', {hideTool: ['image', 'help', 'face']}); //建立编辑器
+
+        //多图上传
+        upload.render({
+            elem: '.uploadMore'
+            , url: '{:url("admin/Index/upload")}' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , multiple: true
+            , accept: 'images' //允许上传的文件类型
+            , field: 'file'//设定文件域的字段名
+            , done: function (res) {
+                //上传完毕
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                    // console.log(this.item)
+                    var obj = this.item;
+                    obj.next().next().append('<span class="upload-span"><img src="' + res.data.file + '" class="upload-more"><em class="upload-close" onclick="delImg(this)">X</em></span>');
+                    var input_arr = obj.prev().val().split(',');
+                    input_arr.push(res.data.file);
+                    obj.prev().val(input_arr.join(','));
+                } else {
+                    tipAction(2, res.msg);
+                }
+            }
+            , error: function () {
+                tipAction(2, '系统繁忙');
+            }
+        });
+        upload.render({
+            elem: '.upload'
+            , url: '{:url("admin/Index/upload")}' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , accept: 'images' //允许上传的文件类型
+            , field: 'file'//设定文件域的字段名
+            , done: function (res) {
+                //上传完毕
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                    var obj = this.item;
+                    obj.children(":first").addClass('layui-hide');
+                    obj.children().eq(1).removeClass('layui-hide').find('img').attr('src', res.data.file);
+                    obj.children().eq(2).val(res.data.file);
+                } else {
+                    tipAction(2, res.msg);
+                }
+            }
+            , error: function () {
+                tipAction(2, '系统繁忙');
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+			
+            data.field.about_us_en = layedit.getContent(about_us_en);
+            data.field.about_us_zh = layedit.getContent(about_us_zh);
+			
+			data.field.about_us_he = layedit.getContent(about_us_he);
+			data.field.about_us_ar = layedit.getContent(about_us_ar);
+			data.field.about_us_es = layedit.getContent(about_us_es);
+			data.field.about_us_pt = layedit.getContent(about_us_pt);
+			data.field.about_us_nl = layedit.getContent(about_us_nl);
+			data.field.about_us_fr = layedit.getContent(about_us_fr);
+			data.field.about_us_de = layedit.getContent(about_us_de);
+			
+            data.field.our_services_en = layedit.getContent(our_services_en);
+            data.field.our_services_zh = layedit.getContent(our_services_zh);
+			
+			data.field.our_services_he = layedit.getContent(our_services_he);
+			data.field.our_services_ar = layedit.getContent(our_services_ar);
+			data.field.our_services_es = layedit.getContent(our_services_es);
+			data.field.our_services_pt = layedit.getContent(our_services_pt);
+			data.field.our_services_nl = layedit.getContent(our_services_nl);
+			data.field.our_services_fr = layedit.getContent(our_services_fr);
+			data.field.our_services_de = layedit.getContent(our_services_de);
+			 
+            data.field.announcement_center_en = layedit.getContent(announcement_center_en);
+            data.field.help_en = layedit.getContent(help_en);
+            data.field.announcement_center_zh = layedit.getContent(announcement_center_zh);
+            data.field.help_zh = layedit.getContent(help_zh);
+			
+			
+			data.field.announcement_center_he = layedit.getContent(announcement_center_he);
+			data.field.help_he = layedit.getContent(help_he);
+			
+			data.field.announcement_center_ar = layedit.getContent(announcement_center_ar);
+			data.field.help_ar = layedit.getContent(help_ar);
+			
+			data.field.announcement_center_es = layedit.getContent(announcement_center_es);
+			data.field.help_es = layedit.getContent(help_es);
+			
+			data.field.announcement_center_pt = layedit.getContent(announcement_center_pt);
+			data.field.help_pt = layedit.getContent(help_pt);
+			
+			data.field.announcement_center_nl = layedit.getContent(announcement_center_nl);
+			data.field.help_nl = layedit.getContent(help_nl);
+			
+			data.field.announcement_center_fr = layedit.getContent(announcement_center_fr);
+			data.field.help_fr = layedit.getContent(help_fr);
+			
+			data.field.announcement_center_de = layedit.getContent(announcement_center_de);
+			data.field.help_de = layedit.getContent(help_de);
+			
+			
+			
+
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/System/configSubmit")}',
+                type: 'post',
+                data: {'config': data.field, 'id': 2},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙,请重试');
+                }
+            });
+            return false;
+        });
+    });
+
+    function delImg(obj) {
+        var input_arr = $(obj).parent().parent().parent().children(':first').val().split(',');
+        var img_src = $(obj).prev().attr('src');
+        input_arr.splice(input_arr.indexOf(img_src), 1);
+        $(obj).parent().parent().parent().children(':first').val(input_arr.join(','));
+        $(obj).parent().remove();
+    }
+
+    function submitConfig() {
+        let obj = $('input[type="hidden"]');
+        let config = {};
+        let key, val;
+        obj.each(function (index) {
+            key = $(this).attr('name');
+            val = $(this).val();
+            if (val) {
+                config[key] = val;
+            }
+        });
+
+        let layer_index = 0;
+        $.ajax({
+            url: "{:url('admin/System/configSubmit')}",
+            type: 'post',
+            data: {'config': config, 'id': 2},
+            beforeSend: function () {
+                layer_index = layer.load(2, {time: 0, shade: 0.5});
+            },
+            success: function (res) {
+                layer.close(layer_index);
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                } else {
+                    tipAction(2, res.msg);
+                }
+            },
+            error: function () {
+                layer.close(layer_index);
+                tipAction(2, '系统繁忙');
+            }
+        });
+    }
+</script>
+{include file="public/footer" /}

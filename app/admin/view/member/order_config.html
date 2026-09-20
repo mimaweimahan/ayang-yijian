@@ -1,0 +1,280 @@
+{include file="public/header" /}
+<style>
+    .layui-form-selected dl {
+        z-index: 1000;
+    }
+
+    .input-hide {
+        display: none;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <input type="hidden" name="id" value="{$info.id|default='0'}">
+            <input type="hidden" name="uid" value="{$uid}">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户昵称</label>
+                <div class="layui-input-inline">
+                    <input type="text" readonly class="layui-input" value="{$nickname}-{$uid}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">任务情况</label>
+                <div class="layui-input-inline">
+                    <input type="text" readonly class="layui-input" value="{$order_total}-{$order_num}">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">账户余额</label>
+                <div class="layui-input-inline">
+                    <input type="text" disabled class="layui-input" value="{$user_info.balance}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">类型</label>
+                <div class="layui-input-inline" style="padding-top: 7px;">
+                    <input type="checkbox" name="type" lay-filter="switchType" lay-skin="switch" lay-text="连单|卡单"
+                           value="2"
+                           {eq name="info.type" value="2" }checked{/eq}>
+                </div>
+            </div>
+            <div class="layui-form-item {eq name='info.type' value='1'}input-hide{/eq}" id="start_num">
+                <label class="layui-form-label">开始连单单数</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="start_num" lay-verify="required" autocomplete="off" class="layui-input"
+                           value="{$info.start_num|default='1'}" placeholder="几单后开始连单">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">当前设置</label>
+                <div class="layui-input-inline" style="width: 70%">
+                    <input type="text" readonly class="layui-input" value="{$info.current_config|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>{$info.current_txt|default=""}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="config" class="layui-form-label">新的设置</label>
+                <div class="layui-input-inline" style="width: 70%">
+                    <input type="text" id="configShow" readonly class="layui-input" value="">
+                    <input type="hidden" id="config" name="config" readonly class="layui-input" value="">
+                    <input type="hidden" id="configNum" name="config_num" value=""/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-inline" style="padding-top: 7px;">
+                    <input type="checkbox" name="status" lay-skin="switch" lay-text="启用|禁用" value="1"
+                           {eq name="info.status" value="1" }checked{/eq}>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">保存设置</button>
+            </div>
+        </form>
+    </div>
+    <div class="layui-card-body ">
+        <div class="layui-form-item">
+            <div class="layui-inline layui-show-xs-block">
+                <label class="layui-form-label" style="width: 65px">价格范围</label>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <input type="text" id="price_min" placeholder="￥" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid">-</div>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <input type="text" id="price_max" placeholder="￥" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-inline layui-show-xs-block">
+                    <a class="layui-btn" href="javascript:;" onclick="searchGoods(true)">
+                        <i class="layui-icon">&#xe615;</i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <table class="layui-table layui-form" style="table-layout: fixed;">
+            <thead>
+            <tr>
+                <th>产品ID</th>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>第几单</th>
+                <th>倍数<br>当前商品叠加倍数:*?</th>
+                <th>下级佣金<br>例:20,30,40;不设置则启用默认设置</th>
+                <th>评分<br>1-5数字，不填写则不评分</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <tbody id="goods"></tbody>
+        </table>
+        <div class="layui-form-mid layui-word-aux" id="more" onclick="searchGoods(false)"
+             style="font-size: 20px;text-align: center;width: 100%;display: none;cursor: pointer">
+            点击加载更多
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var order_type = '{$info.type}';
+    var price_min, price_max, page, is_finish, select_goods, select_goods_show;
+    if (order_type == 1)
+        select_goods = {};
+    else {
+        select_goods = [];
+        select_goods_show = []
+    }
+    layui.use(['form'], function () {
+        var form = layui.form;
+
+        form.on('switch(switchType)', function (data) {
+            if (this.checked) {
+                $('#start_num').show();
+                order_type = 2;
+                select_goods = [];
+            } else {
+                $('#start_num').hide();
+                order_type = 1;
+                select_goods = {};
+            }
+            $('#config').val('');
+            $('#configShow').val('');
+            $('.checkTd').children().attr('data-type', 0).html('&#xe67b;');
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            let configNum = [];
+            $("td.checkTd").each(function () {
+                if ($(this).children().attr('data-type') === '1') {
+                    configNum.push($(this).prev().prev().prev().prev().children().val())
+                }
+            })
+            data.field.config_num = configNum
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/Member/orderConfig")}',
+                type: 'post',
+                data: data.field,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                        setTimeout(function () {
+                            parent.layer.closeAll();
+                        }, 1000);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+            return false;
+        });
+    });
+
+    function searchGoods(is_new) {
+        price_min = $('#price_min').val();
+        price_max = $('#price_max').val();
+        if (is_new) {
+            page = 1;
+            is_finish = false;
+        } else
+            page++;
+        $.ajax({
+            url: "{:url('admin/Product/list')}",
+            type: 'post',
+            data: {price_max, price_min, page},
+            dataType: 'json',
+            success: function (res) {
+                if (res.status < 202) {
+                    var html = '';
+                    select_goods_show = res.data
+                    res.data.forEach(function (item) {
+                        html += '<tr><td>' + item['id'] + '</td><td>' + item['name'] + '</td><td>' + item['price'] + '</td>' +
+                            '<td><input type="text" autocomplete="off" class="layui-input" value="1"></td>' +
+                            '<td><input type="text" autocomplete="off" class="layui-input" value="1"></td>' +
+                            '<td><input type="text" autocomplete="off" class="layui-input" value="" ></td>' +
+                            '<td><input type="text" autocomplete="off" class="layui-input" value="3"></td>' +
+                            '<td class="checkTd"><i class="layui-icon" data-price="' + item['price'] + '" data-id="' + item['id'] + '" data-type="0" style="font-size: 20px" onclick="selectGoods(this)">&#xe67b;</i></td></tr>';
+                    });
+                    if (is_new)
+                        $('#goods').html(html);
+                    else
+                        $('#goods').append(html);
+                    if (res.status == '200') {
+                        $('#more').show();
+                    } else {
+                        $('#more').hide();
+                    }
+                } else {
+                    $('#more').hide();
+                    tipAction(2, '没数据了')
+                }
+            }
+        });
+    }
+
+    function selectGoods(obj) {
+        let id = $(obj).data('id');
+        let type = $(obj).attr('data-type');
+        let order_no = $(obj).parent().prev().prev().prev().prev().children().val();
+        let rate = $(obj).parent().prev().children().val();
+        let beishu = $(obj).parent().prev().prev().prev().children().val();
+        let comm = $(obj).parent().prev().prev().children().val();
+        let price = $(obj).data('price')
+        let goods_price_show = [];
+        // console.log({type})
+        //  console.log({order_no})
+        //   console.log({comm})
+        //  console.log({rate})
+        if (type == 0) {
+            if (order_type == 1 && select_goods[order_no] != undefined) {
+                tipAction(2, '请填写别的单号');
+                return false;
+            }
+            $(obj).attr('data-type', 1).html('&#xe67a;');
+            if (order_type == 1) {
+                // select_goods[order_no] = order_no + '-' + id;
+                select_goods[order_no] = order_no + '-' + id+'-'+beishu+'-'+comm+'-'+rate;
+            } else {
+                select_goods.push(order_no + '-' + id+'-'+beishu+'-'+comm+'-'+rate);
+            }
+        } else {
+            $(obj).attr('data-type', 0).html('&#xe67b;');
+            if (order_type == 1) {
+                delete select_goods[order_no];
+            } else {
+                select_goods.splice(select_goods.indexOf(id), 1);
+            }
+        }
+        let list = [];
+        if (order_type == 1) {
+            list = $.map(select_goods, function (val) {
+
+                return val;
+            });
+        } else {
+            list = select_goods;
+        }
+        list.forEach(function (item) {
+            select_goods_show.forEach(function (goods) {
+                if (item.id === goods.id) {
+                    goods_price_show.push(`ID:${item.id}-$${goods.price}-${item.beishu}-${item.comm}-${item.rate}`)
+                }
+            })
+
+        })
+        console.log(goods_price_show)
+        console.log(list)
+        $("#configShow").val(goods_price_show.join(' | '))
+        $('#config').val(list.join('|'));
+    }
+</script>
+</body>
+{include file="public/footer" /}

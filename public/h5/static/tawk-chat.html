@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<script type='text/javascript'>
+    (function(m, ei, q, i, a, j, s) {
+        m[i] = m[i] || function() {
+            (m[i].a = m[i].a || []).push(arguments)
+        };
+        j = ei.createElement(q),
+            s = ei.getElementsByTagName(q)[0];
+        j.async = true;
+        j.charset = 'UTF-8';
+        j.src = 'https://static.meiqia.com/dist/meiqia.js';
+        s.parentNode.insertBefore(j, s);
+    })(window, document, 'script', '_MEIQIA');
+    _MEIQIA('entId', '3436f048dd243aac1f93c1f562453ddc');
+	 _MEIQIA('language', 'en');
+    // 初始化成功后调用美洽 showPanel
+    _MEIQIA('allSet', function(){
+    _MEIQIA('showPanel');
+    });
+	    document.addEventListener('DOMContentLoaded', () => {
+	      // 1. 解析 URL 参数
+	      const urlParams = new URLSearchParams(window.location.search);
+	      const nickname = urlParams.get('nickname');
+		  const username = urlParams.get('username');
+		  
+		  // 传递顾客信息
+		  _MEIQIA('metadata', {
+		  	name: nickname, // 美洽默认字段
+			tel: username, // 美洽默认字段
+		  });
+	  });
+
+</script>
+
+
+</head>
+<body>
+</body>
+</html>

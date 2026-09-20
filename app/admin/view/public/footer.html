@@ -1,0 +1,24 @@
+</html>
+<script type="application/javascript">
+    /**
+     * 统一接口返回提示弹窗
+     * type 1-成功 2-失败
+     * info 提示信息
+     * */
+    function tipAction(type, info) {
+        layer.msg(info, {icon: type, time: 1500})
+    }
+
+    //图片放大
+    function showBig(obj) {
+        let img_src = $(obj).attr('src');
+        layer.open({
+            type: 1,
+            area: ['70%', 'auto'],
+            shadeClose: true,
+            title: false,
+            closeBtn: false,
+            content: `<div style=""><img src="${img_src}" alt="" width="100%"></div>`
+        });
+    }
+</script>

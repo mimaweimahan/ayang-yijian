@@ -1,0 +1,216 @@
+{include file="public/header" /}
+<style>
+    .layui-form-selected dl {
+        z-index: 1000;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <input type="hidden" name="id" value="{$id}">
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" name="name" lay-verify="name"
+                           autocomplete="off" class="layui-input" value="{$info.name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">图片</label>
+                <div class="layui-input-inline" id="uploadControl">
+                    <div class="layui-upload-drag {notempty name='info.img'}layui-hide{/notempty}">
+                        <i class="layui-icon" style="font-size: 30px"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <div class="{empty name='info.img'}layui-hide{/empty}" id="uploadView">
+                        <img src="{$info.img|default=''}" alt="上传成功后渲染" style="max-width: 200px" width="100%">
+                    </div>
+                    <input type="hidden" name="img" value="{$info.img|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="order_num" class="layui-form-label">
+                    <span class="x-red">*</span>每日订单量
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="order_num" name="order_num" lay-verify="num"
+                           autocomplete="off" class="layui-input" value="{$info.order_num|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="order_num" class="layui-form-label">
+                    <span class="x-red">*</span>任务轮
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="ring" name="ring" lay-verify="num"
+                           autocomplete="off" class="layui-input" value="{$info.ring|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="limit_price" class="layui-form-label">
+                    <span class="x-red">*</span>限制金额
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="limit_price" name="limit_price"
+                           autocomplete="off" class="layui-input" value="{$info.limit_price|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>做单可用余额限制
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="reward_price" class="layui-form-label">
+                    <span class="x-red">*</span>升级奖励
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="reward_price" name="reward_price"
+                           autocomplete="off" class="layui-input" value="{$info.reward_price|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>购买会员所返给的金额
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="price" class="layui-form-label">
+                    <span class="x-red">*</span>等级价格
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="price" name="price" lay-verify="price"
+                           autocomplete="off" class="layui-input" value="{$info.price|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>购买会员金额
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="withdraw_min" class="layui-form-label">
+                    <span class="x-red">*</span>提现最小金额
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="withdraw_min" name="withdraw_min" lay-verify="price"
+                           autocomplete="off" class="layui-input" value="{$info.withdraw_min|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="withdraw_max" class="layui-form-label">
+                    <span class="x-red">*</span>提现最大金额
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="withdraw_max" name="withdraw_max" lay-verify="price"
+                           autocomplete="off" class="layui-input" value="{$info.withdraw_max|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="withdraw_num" class="layui-form-label">
+                    <span class="x-red">*</span>提现完成订单数
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="withdraw_num" name="withdraw_num" lay-verify="price"
+                           autocomplete="off" class="layui-input" value="{$info.withdraw_num|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="withdraw_rate" class="layui-form-label">
+                    <span class="x-red">*</span>手续费率
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="withdraw_rate" name="withdraw_rate" autocomplete="off" class="layui-input"
+                           value="{$info.withdraw_rate|default='0'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>提现金额*所填数字
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="order_rate" class="layui-form-label">
+                    <span class="x-red">*</span>订单佣金比例
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="order_rate" name="order_rate" autocomplete="off" class="layui-input"
+                           value="{$info.order_rate|default='0'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>订单金额*所填数字
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">
+                    {if condition="$id eq 0"}增加{else/}更新{/if}
+                </button>
+                <a class="layui-btn" href="javascript:history.back()">返回</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'upload'], function () {
+        var form = layui.form, upload = layui.upload;
+        //拖拽上传
+        upload.render({
+            elem: '#uploadControl'
+            , url: '{:url("admin/Index/upload")}' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , accept: 'images' //允许上传的文件类型
+            , field: 'file'//设定文件域的字段名
+            , done: function (res) {
+                //上传完毕
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                    $('.layui-upload-drag').addClass('layui-hide');
+                    layui.$('#uploadView').removeClass('layui-hide').find('img').attr('src', res.data.file);
+                    $('#uploadView').next().val(res.data.file);
+                } else {
+                    tipAction(2, res.msg);
+                }
+            }
+            , error: function () {
+                tipAction(2, '系统繁忙');
+            }
+        });
+
+        //自定义验证规则
+        form.verify({
+            name: function (val) {
+                if (val.length < 1) {
+                    return '标题至少1个字符';
+                }
+            },
+            num: [/^[0-9]\d*/, '请输入正确的数字'],
+            price: [/^[1-9]\d*\.\d*|^[1-9]\d*/, '请输入正确的价格'],
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/Member/levelAdd")}',
+                type: 'post',
+                data: data.field,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                        // setTimeout(function () {
+                        //     parent.location.reload();
+                        // }, 1000);
+                        setTimeout(function () {
+                            window.location.href = '/admin/Member/levelList';
+                        }, 1000);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+{include file="public/footer" /}

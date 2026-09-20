@@ -1,0 +1,283 @@
+{include file="public/header" /}
+<style>
+    .layui-form-item .layui-form-label {
+        width: 100px;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <input type="hidden" name="id" value="1">
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>APP名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" name="config[app_name]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.app_name|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>APP名称2
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" name="config[app_name2]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.app_name2|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Logo</label>
+                <div class="layui-input-inline" id="uploadControl">
+                    <div class="layui-upload-drag {notempty name='info.logo'}layui-hide{/notempty}">
+                        <i class="layui-icon" style="font-size: 30px"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <div class="{empty name='info.logo'}layui-hide{/empty}" id="uploadView">
+                        <img src="{$info.logo|default=''}" alt="上传成功后渲染" style="max-width: 200px" width="100%">
+                    </div>
+                    <input type="hidden" name="config[logo]" value="{$info.logo|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>开盘时间
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" name="config[open_time]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.open_time|default=''}" readonly id="open_time">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>闭盘时间
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" name="config[close_time]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.close_time|default=''}" readonly id="close_time">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>提现-开始时间
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" name="config[with_open_time]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.with_open_time|default=''}" readonly id="with_open_time">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>提现-结束时间
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" name="config[with_close_time]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.with_close_time|default=''}" readonly id="with_close_time">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>注册奖励
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" name="config[register_reward]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.register_reward|default=''}">
+                </div>
+            </div>
+<!--             <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">-->
+<!--                    <span class="x-red">*</span>USDT~？KRW-->
+<!--                </label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="config[usdt_krw]" lay-verify="required" autocomplete="off"-->
+<!--                           class="layui-input" value="{$info.usdt_krw|default=''}">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">-->
+<!--                    <span class="x-red">*</span>ios下载地址-->
+<!--                </label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="config[ios]" lay-verify="required" autocomplete="off"-->
+<!--                           class="layui-input" value="{$info.ios|default=' '}">-->
+<!--                </div>-->
+<!--                -->
+<!--            </div>-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>登录区分大小写
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" name="config[login_binary]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.login_binary|default=' '}">0不区分 1区分
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>返佣倍数
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" name="config[back_comm_multiple]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.back_comm_multiple|default='1'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>设置卡单或者连单用户才会生效
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>一级代理返佣比例
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" name="config[comm_reward_daili]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.comm_reward_daili|default='0'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>佣金*返佣比例
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>一级返佣比例
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" name="config[comm_reward_0]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.comm_reward_0|default='0'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>佣金*返佣比例
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>二级返佣比例
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" name="config[comm_reward_1]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.comm_reward_1|default='0'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>佣金*返佣比例
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>三级返佣比例
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" name="config[comm_reward_2]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.comm_reward_2|default='0'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>佣金*返佣比例
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>四级返佣比例
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" name="config[comm_reward_3]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.comm_reward_3|default='0'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>佣金*返佣比例
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>五级返佣比例
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" name="config[comm_reward_4]" lay-verify="required" autocomplete="off"
+                           class="layui-input" value="{$info.comm_reward_4|default='0'}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>佣金*返佣比例
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'laydate', 'upload'], function () {
+        var form = layui.form,
+            date = layui.laydate;
+        var upload = layui.upload;
+        date.render({
+            elem: '#open_time', //指定元素
+            type: 'time',
+        });
+        date.render({
+            elem: '#close_time', //指定元素
+            type: 'time',
+        });
+        date.render({
+            elem: '#with_open_time', //指定元素
+            type: 'time',
+        });
+        date.render({
+            elem: '#with_close_time', //指定元素
+            type: 'time',
+        });
+
+        //拖拽上传
+        upload.render({
+            elem: '#uploadControl'
+            , url: '{:url("admin/Index/upload")}' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+            , accept: 'images' //允许上传的文件类型
+            , field: 'file'//设定文件域的字段名
+            , done: function (res) {
+                //上传完毕
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                    $('.layui-upload-drag').addClass('layui-hide');
+                    layui.$('#uploadView').removeClass('layui-hide').find('img').attr('src', res.data.file);
+                    $('#uploadView').next().val(res.data.file);
+                } else {
+                    tipAction(2, res.msg);
+                }
+            }
+            , error: function () {
+                tipAction(2, '系统繁忙');
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            //发异步，把数据提交给php
+            $.ajax({
+                url: '{:url("admin/System/configSubmit")}',
+                type: 'post',
+                data: data.field,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙,请重试');
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+{include file="public/footer" /}

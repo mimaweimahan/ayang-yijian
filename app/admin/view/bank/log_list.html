@@ -1,0 +1,133 @@
+{include file="public/header" /}
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" action="{:url('admin/Bank/logList')}">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="nickname" placeholder="请输入用户" autocomplete="off"
+                                   class="layui-input" value="{$nickname}">
+                        </div>
+
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="ip" placeholder="请输入操作IP" autocomplete="off"
+                                   class="layui-input" value="{$ip}">
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="start_time" placeholder="开始时间" autocomplete="off" readonly
+                                   id="start_time" value="{$start_time}" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>
+                            </button>
+                        </div>
+                    </form>
+                    <span style="float: right">共有数据：{$list->total()} 条</span>
+                </div>
+                <div class="layui-card-body" style="overflow-x: auto">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th width="5%">ID</th>
+                            <th>用户</th>
+                            <th>修改之前</th>
+                            <th>修改之后</th>
+                            <th>操作类型</th>
+                            <th>操作人</th>
+                            <th>操作IP</th>
+                            <th>操作时间</th>
+                            <th>备注</th>
+                            <!--                            <th width="230">操作</th>-->
+                        </thead>
+                        <tbody>
+                        {foreach name="list" item="vo"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.username}</td>
+                            <td>
+                                {if $vo.before!=''}
+                                银行名称：{$vo.before.name}<br>
+                                银行用户：{$vo.before.account_name}<br>
+                                银行账户：{$vo.before.card_no}<br>
+                                Wise：{$vo.before.wise}<br>
+                                Revolut：{$vo.before.revolut}<br>
+                                USDT：{$vo.before.usdt}<br>
+                                {else}
+                                --
+                                {/if}
+                            </td>
+                            <td>
+                                银行名称：{$vo.after.name}<br>
+                                银行用户：{$vo.after.account_name}<br>
+                                银行账户：{$vo.after.card_no}<br>
+                                Wise：{$vo.after.wise}<br>
+                                Revolut：{$vo.after.revolut}<br>
+                                USDT：{$vo.after.usdt}<br>
+                            </td>
+                            <td>{$vo.action_type_text}</td>
+                            <td>{$vo.action_name}</td>
+                            <td>{$vo.action_ip}
+                                <br/>
+                                操作地址：<span class="login-ip-address-show" data-login-ip="{$vo.action_ip}"></span>
+                            </td>
+                            <td>{$vo.action_time}</td>
+                            <td>{$vo.remark}</td>
+                            <!--                            <td class="td-manage" style="padding: 10px 5px">-->
+
+                            <!--                            </td>-->
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body">
+                    <div class="page">
+                        {$list|raw}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    layui.use(['form', 'laydate'], function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#start_time', //指定元素
+            type: 'datetime',
+        });
+    });
+    $(function(){
+        $(".login-ip-address-show").each(function(index,item){
+            let loginIp = $(this).data('login-ip');
+            let obj = $(this)
+            $.ajax({
+                url: '{:url("admin/PublicApi/getIpAddress")}',
+                type: 'post',
+                data: {'ip': loginIp},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status === 200) {
+                        obj.html(res.data)
+                    }
+                },
+                error: function () {
+                    // layer.close(index);
+                    // tipAction(2, '系统繁忙');
+                }
+            });
+        });
+
+    });
+</script>
+{include file="public/footer" /}

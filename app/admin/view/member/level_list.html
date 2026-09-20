@@ -1,0 +1,76 @@
+{include file="public/header" /}
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <a class="layui-btn" href="{:url('admin/Member/levelAdd')}">
+                        <i class="layui-icon"></i>添加会员等级
+                    </a>
+                    <span style="float: right">共有数据：{$list->total()} 条</span>
+                </div>
+                <div class="layui-card-body" style="overflow-x: auto">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th width="2%">等级</th>
+                            <th>名称</th>
+                            <th>图片</th>
+                            <th>每日订单量</th>
+                            <th>限制金额</th>
+                            <th>升级奖励</th>
+                            <th>价格</th>
+                            <th width="15%">提现区间</th>
+                            <th>提现限制单数</th>
+                            <th>提现手续费率</th>
+                            <th>订单佣金比例</th>
+                            <th width="8%">创建时间</th>
+                            <th width="3%">操作</th>
+                        </thead>
+                        <tbody>
+                        {foreach name="list" item="vo"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.name}</td>
+                            <td title="点击放大">
+                                <img src="{$vo.img|default='/static/admin/images/noImg.jpg'}" onclick="showBig(this)" width="100%">
+                            </td>
+                            <td>{$vo.order_num}</td>
+                            <td>{$vo.limit_price}</td>
+                            <td>{$vo.reward_price}</td>
+                            <td>{$vo.price}</td>
+                            <td>{$vo.withdraw_min}-{$vo.withdraw_max}</td>
+                            <td>{$vo.withdraw_num}</td>
+                            <td>{$vo.withdraw_rate}</td>
+                            <td>{$vo.order_rate}</td>
+                            <td>{$vo.create_time}</td>
+                            <td class="td-manage">
+                                <a class="layui-btn layui-btn-mini"
+                                   href="{:url('admin/Member/levelAdd',['id'=>$vo['id']])}">编辑</a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body">
+                    <div class="page">
+                        {$list|raw}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    layui.use(['form']);
+</script>
+{include file="public/footer" /}

@@ -1,0 +1,139 @@
+{include file="public/header" /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <input type="hidden" name="id" value="{$admin_id}">
+            <div class="layui-form-item">
+                <label for="username" class="layui-form-label">
+                    <span class="x-red">*</span>用户名
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="username" name="username" lay-verify="username"
+                           autocomplete="off" class="layui-input" value="{$info.username|default=''}"
+                           {if condition="$admin_id gt 0" }disabled{/if}>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>将会成为您唯一的登入名
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_pass" class="layui-form-label">密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_pass" name="password" lay-verify="pass" autocomplete="off"
+                           class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    6到16个字符
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repass" class="layui-form-label">确认密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_repass" lay-verify="repass" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="username" class="layui-form-label">
+                    <span class="x-red">*</span>前台用户id
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="user_id" name="user_id" lay-verify="user_id"
+                           autocomplete="off" class="layui-input" value="{$info.user_id|default=''}"
+                           >
+                </div>
+            </div>
+			
+
+			
+			
+            <div class="layui-form-item">
+                <label for="role_id" class="layui-form-label">
+                    <span class="x-red">*</span>角色
+                </label>
+                <div class="layui-input-inline">
+                    <select name="role_id" id="role_id">
+                        {foreach name="role_list" item="vo"}
+                        <option value="{$vo.id}" {if condition='$info.role_id eq $vo.id' }selected{/if}>{$vo.title}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repass" class="layui-form-label">
+                </label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">
+                    {if condition="$admin_id eq 0"}增加{else/}更新{/if}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'layer'],
+        function () {
+            $ = layui.jquery;
+            var form = layui.form,
+                layer = layui.layer;
+            var pass_reg = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,.\/]).{6,16}$/;
+
+            //自定义验证规则
+            form.verify({
+                username: function (val) {
+                    if (val.length < 2) {
+                        return '用户名至少2个字符';
+                    }
+                    var reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
+                    if (reg.test(val)) {
+                        return '用户名不能有中文';
+                    }
+                },
+                pass: function (val) {
+                    if (val != '') {
+                        if (val.length < 6) {
+                            return '密码长度必须6-16';
+                        }
+                        if (!pass_reg.test(val))
+                            return '密码必须由6-16位字母、数字、特殊符号组成';
+                    }
+                },
+                repass: function (value) {
+                    if ($('#L_pass').val() != $('#L_repass').val()) {
+                        return '两次密码不一致';
+                    }
+                }
+            });
+
+            //监听提交
+            form.on('submit(add)', function (data) {
+                console.log(data.field);
+                //发异步，把数据提交给php
+                $.ajax({
+                    url: '{:url("admin/System/manageAdd")}',
+                    type: 'post',
+                    data: data.field,
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status == '200') {
+                            tipAction(1, res.msg);
+                            setTimeout(function () {
+                                // 获得frame索引
+                                // var index = parent.layer.getFrameIndex(window.name);
+                                //关闭当前frame
+                                // parent.layer.close(index);
+                                parent.location.reload();
+                            }, 1000);
+                        } else {
+                            tipAction(2, res.msg);
+                        }
+                    },
+                    error: function () {
+                        tipAction(2, '系统繁忙,请重试');
+                    }
+                });
+                return false;
+            });
+        });
+</script>
+</body>
+{include file="public/footer" /}

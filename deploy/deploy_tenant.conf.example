@@ -1,0 +1,35 @@
+# deploy_tenant.sh 默认配置示例
+# 复制为 deploy_tenant.conf 后按需修改（脚本会自动加载同目录或 /etc 下的配置）
+
+# 母模代码目录（含 .env.example / base_template.sql / public/）
+TEMPLATE_CODE=/var/www/template_code
+
+# 租户站点根目录前缀：实际路径 = SITE_PREFIX + TENANT ，如 /var/www/site_agent01
+SITE_PREFIX=/var/www/site_
+
+# 主域名（最终 URL = https://{tenant}.{BASE_DOMAIN}）
+BASE_DOMAIN=yourdomain.com
+
+# Web 运行用户
+WEB_USER=www-data
+WEB_GROUP=www-data
+
+# MySQL（不填密码时：宝塔环境会尝试读取面板库；否则需 export MYSQL_ROOT_PASSWORD）
+MYSQL_HOST=127.0.0.1
+MYSQL_PORT=3306
+MYSQL_ROOT_USER=root
+# MYSQL_ROOT_PASSWORD=
+
+# 租户库：库名/用户名 = db_{tenant} ，密码随机生成并写入站点 .env
+DB_PREFIX=db_
+
+# Nginx
+NGINX_CONF_DIR=/etc/nginx/conf.d
+NGINX_RELOAD_CMD='nginx -t && systemctl reload nginx'
+PHP_INCLUDE=snippets/fastcgi-php.conf
+
+# 后台入口文件名（与 public/ 下一致）
+ADMIN_ENTRY=ayangshuadan222.php
+
+# 是否在导入后清理 runtime
+PURGE_RUNTIME=1

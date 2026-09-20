@@ -1,0 +1,120 @@
+{include file="public/header" /}
+<style>
+    .td-hidden-txt {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" action="{:url('admin/Notice/list')}">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="name" placeholder="请输入关键词" autocomplete="off"
+                                   class="layui-input" value="{$name}">
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="start_time" placeholder="创建时间" autocomplete="off" readonly
+                                   id="start_time" value="{$start_time}" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-header">
+                    <a class="layui-btn" href="{:url('admin/Notice/add')}">
+                        <i class="layui-icon"></i>添加公告
+                    </a>
+                    <span style="float: right">共有数据：{$list->total()} 条</span>
+                </div>
+                <div class="layui-card-body" style="overflow-x: auto">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th width="5%">ID</th>
+                           
+                            <th width="50%">标题</th>
+                           
+                            <th>更新时间</th>
+                            <th width="20%">操作</th>
+                        </thead>
+                        <tbody>
+                        {foreach name="list" item="vo"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                           
+                            <td>{$vo.title}</td>
+                            
+                            <td>{$vo.update_time}</td>
+                            <td class="td-manage">
+                                <a class="layui-btn layui-btn-mini"
+                                   href="{:url('admin/Notice/add',['id'=>$vo['id']])}">
+                                    编辑
+                                </a>
+                                <a class="layui-btn layui-btn-mini layui-btn-danger"
+                                   onclick="methodDel(this,'{$vo.id}')" href="javascript:;">
+                                    删除
+                                </a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body">
+                    <div class="page">
+                        {$list|raw}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    layui.use(['form', 'laydate'], function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#start_time', //指定元素
+            type: 'datetime',
+        });
+    });
+
+    /*删除*/
+    function methodDel(obj, id) {
+        layer.confirm('确认要删除吗？', function (index) {
+            //发异步删除数据
+            $.ajax({
+                url: '{:url("admin/Notice/del")}',
+                type: 'post',
+                data: {'id': id},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status == '200') {
+                        $(obj).parents("tr").remove();
+                        tipAction(1, res.msg);
+                    } else {
+                        tipAction(2, res.msg);
+                    }
+                },
+                error: function () {
+                    tipAction(2, '系统繁忙');
+                }
+            });
+        });
+    }
+</script>
+{include file="public/footer" /}

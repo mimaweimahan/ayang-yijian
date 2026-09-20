@@ -1,0 +1,130 @@
+{include file="public/header" /}
+<style>
+    .x-admin-sm .layui-table td {
+        font-size: 15px;
+    }
+
+    .td_input {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border: none;
+    }
+
+    .td_text {
+        height: 60px;
+        padding: 10px;
+        width: calc(100% - 20px);
+        border: none;
+        resize: none;
+    }
+</style>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <button class="layui-btn" onclick="addConfig()">
+                        <i class="layui-icon"></i>添加配置
+                    </button>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form" style="table-layout: fixed;">
+                        <thead>
+                        <tr>
+                            <th width="3%">操作</th>
+                            <th width="20%">名称</th>
+                            <th>值</th>
+                        </tr>
+                        </thead>
+                        <tbody id="config">
+                        {foreach name='list' item='vo'}
+                        <tr>
+                            <td>
+                                <a title="删除" onclick="delConfig(this)" href="javascript:;">
+                                    <i class="layui-icon">&#xe640;</i>
+                                </a>
+                            </td>
+                            <td><input type="text" class="td_input" value="{$vo.name}" placeholder="请输入名称"></td>
+                            <td><textarea class="td_text" placeholder="请输入对应的值">{$vo.val}</textarea></td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-header">
+                    <button class="layui-btn" onclick="submitConfig()">
+                        提交配置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="application/javascript">
+    function addConfig() {
+        let html = '<tr><td><a title="删除" onclick="delConfig(this)" href="javascript:;"><i class="layui-icon">&#xe640;</i></a></td>' +
+            '<td><input type="text" class="td_input" placeholder="请输入名称"></td>' +
+            '<td><textarea class="td_text" placeholder="请输入对应的值"></textarea></td></tr>';
+        $('#config').append(html);
+    }
+
+    function delConfig(obj) {
+        $(obj).parent().parent().remove();
+    }
+
+    function submitConfig() {
+        let obj = $('#config>tr');
+        if (obj.length < 1) {
+            tipAction(2, '请添加配置');
+            return false;
+        }
+        let config = new Array();
+        let val, name;
+        obj.each(function () {
+            name = $.trim($(this).find('input').val());
+            val = $.trim($(this).find('textarea').val());
+            if (name == '') {
+                tipAction(2, '请输入名称');
+                $(this).find('input').focus();
+                return false;
+            }
+            if (val == '') {
+                tipAction(2, '请输入对应的值');
+                $(this).find('textarea').focus();
+                return false;
+            }
+            config.push({'name': name, 'val': val});
+        });
+        // console.log(config);
+        let layer_index = 0;
+        $.ajax({
+            url: "{:url('admin/System/configSubmit')}",
+            type: 'post',
+            data: {'config': config, 'id': 3},
+            beforeSend: function () {
+                layer_index = layer.load(2, {time: 0, shade: 0.5});
+            },
+            success: function (res) {
+                layer.close(layer_index);
+                if (res.status == '200') {
+                    tipAction(1, res.msg);
+                } else {
+                    tipAction(2, res.msg);
+                }
+            },
+            error: function () {
+                layer.close(layer_index);
+                tipAction(2, '系统繁忙');
+            }
+        });
+    }
+</script>
+{include file="public/footer" /}

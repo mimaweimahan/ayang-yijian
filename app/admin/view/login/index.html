@@ -1,0 +1,127 @@
+<!doctype html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>后台登录-{$system_name}</title>
+    <meta name="csrf-token" content="{:token()}">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="/static/admin/css/font.css">
+    <link rel="stylesheet" href="/static/admin/css/login.css">
+    <link rel="stylesheet" href="/static/admin/css/xadmin.css">
+    <script type="text/javascript" src="/static/admin/js/jquery.min.js"></script>
+    <script src="/static/admin/lib/layui/layui.js" charset="utf-8"></script>
+    <!--[if lt IE 9]>
+    <script src="/static/admin/js/html5.min.js"></script>
+    <script src="/static/admin/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="login-bg">
+<div class="login layui-anim layui-anim-up">
+    <div class="message">{$system_name}-管理登录</div>
+    <div id="darkbannerwrap"></div>
+    <form method="post" class="layui-form">
+        <!--        <input type="hidden" id="__token__" name="__token__" value="{:token()}"/>-->
+        <input name="username" placeholder="用户名" type="text" lay-verify="required" class="layui-input"
+               autocomplete="off">
+        <hr class="hr15">
+        <input name="password" lay-verify="required" placeholder="密码" type="password" class="layui-input">
+        <hr class="hr15">
+
+        {if condition="$google_auth eq false"}
+
+        <input type="text" name="code" placeholder="验证码" class="layui-input" lay-verify="required" autocomplete="off"
+               style="width: 50%;display: inline-block">
+        <div style="display: inline-block;width: 49%">
+            <img src="{:url('Login/captcha')}" alt="captcha" width="100%" id="captcha"/>
+        </div>
+        {/if}
+
+
+        {if condition="$google_auth eq true"}
+        <hr class="hr15">
+        <input name="google_code" placeholder="谷歌验证码" type="text" class="layui-input"
+               autocomplete="off">
+        <hr class="hr15">
+        {/if}
+        <hr class="hr15">
+        <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+        <hr class="hr20">
+    </form>
+</div>
+<script type="application/javascript">
+    $(function () {
+        // 回车触发登录
+        // $(document).keyup(function (event) {
+        //     if (event.keyCode == 13) {
+        //         $("#login_but").trigger("click");
+        //     }
+        // });
+        $('#captcha').click(function () {
+            $(this).attr("src", $(this).attr("src") + '?' + Math.random());
+        });
+        layui.use('form', function () {
+            var form = layui.form;
+            //自定义验证规则
+            // form.verify({
+            // title: function(value){
+            //     if(value.length < 5){
+            //         return '标题至少得5个字符啊';
+            //     }
+            // }
+            // ,pass: [
+            //     /^[\S]{6,12}$/
+            //     ,'密码必须6到12位，且不能出现空格'
+            // ]
+            // ,content: function(value){
+            //     layedit.sync(editIndex);
+            // }
+            // });
+            //监听提交
+            form.on('submit(login)', function (data) {
+                // 获取当前页面的URL参数
+                var urlParams = new URLSearchParams(window.location.search);
+                var entryType = urlParams.get('entry_type');
+                var proxyEntry = urlParams.get('proxy_entry');
+                
+                // 将入口类型参数添加到请求数据中
+                if (entryType) {
+                    data.field.entry_type = entryType;
+                }
+                if (proxyEntry) {
+                    data.field.proxy_entry = proxyEntry;
+                }
+                
+                $.ajax({
+                    url: "{:url('Login/checkLogin')}",
+                    type: 'post',
+                    data: data.field,
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (res) {
+                        if (res.status == '200') {
+                            layer.msg(res.msg, {icon: 1, time: 3000});
+                            location.href = res.url;
+                        } else {
+                            // $("#__token__").val("{:token()}");
+                            // console.log("{:token()}")
+                            $("#captcha").attr("src", $("#captcha").attr("src") + '?' + Math.random());
+                            layer.msg(res.msg, {icon: 2, time: 3000});
+                        }
+                    },
+                    error: function () {
+                        layer.msg('系统繁忙，请重试', {icon: 2, time: 3000});
+                    }
+                });
+                return false;
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+{include file="public/header" /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form method="post" class="layui-form layui-form-pane">
+            <input type="hidden" name="id" value="{$id}">
+            <div class="layui-form-item">
+                <label for="title" class="layui-form-label">
+                    <span class="x-red">*</span>角色名
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title" name="title" required="" lay-verify="required|nikename"
+                           autocomplete="off" class="layui-input" value="{$title}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">
+                    拥有权限
+                </label>
+                <table class="layui-table layui-input-block">
+                    <tbody id="group_add">
+                    {foreach name="menu" item='p_menu' key="p_k"}
+                    <tr>
+                        <td>
+                            <input name="rule_id[]" lay-skin="primary" type="checkbox" lay-filter="father"
+                                   lay-verify="check" value="{$p_k}" title="{$p_menu.name}"
+                                   {if condition="in_array((string)$p_k,$rule,TRUE)" }checked{/if}>
+                        </td>
+                        {if condition="!empty($p_menu['children'])"}
+                        <td>
+                            <div class="layui-input-block">
+                                {foreach name="p_menu.children" item="c_menu" key="c_k"}
+                                <input name="rule_id[]" lay-skin="primary" type="checkbox"
+                                       lay-verify="check" value="{$p_k.'-'.$c_k}" title="{$c_menu.name}"
+                                       {if condition="in_array($p_k.'-'.$c_k,$rule)" }checked{/if}>
+                                {if condition="!empty($c_menu['children'])"}
+                                {foreach name="c_menu.children" item="cc_menu" key="cc_k"}
+                                <input name="rule_id[]" lay-skin="primary" type="checkbox"
+                                       lay-verify="check" value="{$p_k.'-'.$c_k.'-'.$cc_k}" title="{$cc_menu.name}"
+                                       {if condition="in_array($p_k.'-'.$c_k.'-'.$cc_k,$rule)" }checked{/if}>
+                                {/foreach}
+                                {/if}
+                                {/foreach}
+                            </div>
+                        </td>
+                        {/if}
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn" lay-submit="" lay-filter="add">提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        var form = layui.form;
+
+        //自定义验证规则
+        form.verify({
+            nikename: function (value) {
+                if (value.length < 2) {
+                    return '昵称至少得2个字符啊';
+                }
+            },
+            check: function () {
+                var check_num = $('#group_add input:checked').length;
+                if (!check_num)
+                    return '请选择权限';
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            console.log(data.field);
+            $.ajax({
+                url: "{:url('admin/System/groupAdd')}",
+                type: 'post',
+                data: data.field,
+                dataType: 'json',
+                success: function (res) {
+                    layer.msg(res.msg);
+                    if (res.status == '200') {
+                        setTimeout(function () {
+                            // 获得frame索引
+                            // var index = parent.layer.getFrameIndex(window.name);
+                            //关闭当前frame
+                            // parent.layer.close(index);
+                            parent.location.reload();
+                        }, 1000);
+                    }
+                },
+                error: function () {
+                    layer.msg('系统繁忙,请重试');
+                }
+            });
+            return false;
+        });
+
+        //全选
+        form.on('checkbox(father)', function (data) {
+            if (data.elem.checked) {
+                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                form.render();
+            } else {
+                $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                form.render();
+            }
+        });
+    });
+</script>
+</body>
+{include file="public/footer" /}
