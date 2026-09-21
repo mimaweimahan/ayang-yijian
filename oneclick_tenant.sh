@@ -129,13 +129,24 @@ else
   PORT="$(alloc_port)"
 fi
 
-# ---------- 对外访问地址（域名可后配：占位域名 → 公网 IP:端口）----------
+# ---------- 对外访问地址（域名可后配：占位域名 → 公网 IPv4:端口）----------
 detect_public_ip() {
+  # 强制 IPv4：裸 curl 在双栈机器上常返回 IPv6，浏览器/邀请链接不好用
   local ip=""
-  ip="$(curl -fsS --max-time 5 ifconfig.me 2>/dev/null || true)"
-  [[ -z "$ip" ]] && ip="$(curl -fsS --max-time 5 icanhazip.com 2>/dev/null || true)"
-  [[ -z "$ip" ]] && ip="$(curl -fsS --max-time 5 ip.sb 2>/dev/null || true)"
-  echo "$ip" | tr -d '[:space:]'
+  ip="$(curl -4 -fsS --max-time 5 https://ifconfig.me 2>/dev/null || true)"
+  [[ -z "$ip" ]] && ip="$(curl -4 -fsS --max-time 5 https://ipv4.icanhazip.com 2>/dev/null || true)"
+  [[ -z "$ip" ]] && ip="$(curl -4 -fsS --max-time 5 https://api.ipify.org 2>/dev/null || true)"
+  [[ -z "$ip" ]] && ip="$(curl -4 -fsS --max-time 5 https://ip.sb 2>/dev/null || true)"
+  ip="$(echo "$ip" | tr -d '[:space:]')"
+  # 拒绝 IPv6
+  if [[ "$ip" == *:* ]]; then
+    ip=""
+  fi
+  # 简单校验 IPv4
+  if [[ ! "$ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    ip=""
+  fi
+  echo "$ip"
 }
 _use_ip=0
 case "$ACCESS_MODE" in
@@ -149,7 +160,10 @@ case "$ACCESS_MODE" in
 esac
 if [[ "$_use_ip" -eq 1 ]]; then
   [[ -n "$PUBLIC_IP" ]] || PUBLIC_IP="$(detect_public_ip)"
-  [[ -n "$PUBLIC_IP" ]] || die "无法探测公网 IP，请手动: PUBLIC_IP=x.x.x.x ACCESS_MODE=ip $0 ..."
+  [[ -n "$PUBLIC_IP" ]] || die "无法探测公网 IPv4，请手动: PUBLIC_IP=187.x.x.x ACCESS_MODE=ip $0 ..."
+  if [[ "$PUBLIC_IP" == *:* ]]; then
+    die "PUBLIC_IP 不能是 IPv6（当前=$PUBLIC_IP）。请: PUBLIC_IP=你的IPv4 ACCESS_MODE=ip $0 ..."
+  fi
   DOMAIN="${PUBLIC_IP}"
   APP_URL="${APP_SCHEME}://${PUBLIC_IP}:${PORT}"
   log "访问模式=IP（域名后配）| APP_URL=$APP_URL"

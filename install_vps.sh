@@ -159,7 +159,9 @@ else
   log "[5/5] 跳过预构建（首次 oneclick 时会自动 build）"
 fi
 
-PUBLIC_IP="$(curl -fsS --max-time 5 ifconfig.me 2>/dev/null || curl -fsS --max-time 5 icanhazip.com 2>/dev/null || echo '未知')"
+PUBLIC_IP="$(curl -4 -fsS --max-time 5 https://ifconfig.me 2>/dev/null || curl -4 -fsS --max-time 5 https://ipv4.icanhazip.com 2>/dev/null || echo '未知')"
+PUBLIC_IP="$(echo "$PUBLIC_IP" | tr -d '[:space:]')"
+[[ "$PUBLIC_IP" == *:* ]] && PUBLIC_IP='未知'
 
 printf '\n'
 ok "VPS 母模环境已就绪"
