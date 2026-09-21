@@ -1,11 +1,18 @@
-# 基于 PHP 7.4-FPM + Nginx（兼容本项目 PHP 7.3+ 语法；生产可改为 7.3 镜像）
+# 基于 PHP 7.4-FPM + Nginx（兼容本项目 PHP 7.3+ 语法）
+# bullseye 已 EOL：只用 archive.debian.org/main（勿用 deb.debian.org / debian-security）
 FROM php:7.4-fpm-bullseye
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai
 
-# 系统依赖 + Nginx + Supervisor + curl
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN set -eux; \
+    printf '%s\n' \
+      'deb http://archive.debian.org/debian bullseye main contrib non-free' \
+      'deb http://archive.debian.org/debian bullseye-updates main contrib non-free' \
+      > /etc/apt/sources.list; \
+    rm -f /etc/apt/sources.list.d/*; \
+    apt-get -o Acquire::Check-Valid-Until=false update; \
+    apt-get -o Acquire::Check-Valid-Until=false install -y --no-install-recommends \
         nginx \
         supervisor \
         curl \
@@ -29,12 +36,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         mbstring \
     && rm -rf /var/lib/apt/lists/*
 
-# supercronic：容器友好的 crontab 执行器
 ARG SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.33/supercronic-linux-amd64
 RUN curl -fsSL -o /usr/local/bin/supercronic "$SUPERCRONIC_URL" \
     && chmod +x /usr/local/bin/supercronic
 
-# Nginx / PHP / Supervisor 配置
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/zz-tenant.ini
 COPY docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
@@ -51,7 +56,6 @@ RUN chmod +x /usr/local/bin/entrypoint-app.sh /usr/local/bin/worker-loop.sh \
 
 WORKDIR /var/www/html
 
-# 默认以 Web 角色启动（php-fpm + nginx）；worker/cron 在 compose 中覆盖 command
 EXPOSE 80
 ENTRYPOINT ["/usr/local/bin/entrypoint-app.sh"]
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
