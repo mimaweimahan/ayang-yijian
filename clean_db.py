@@ -40,6 +40,8 @@ CLEAR_TABLES = {
     "mod_sign",  # 签到记录
     "mod_day_fill",  # 每日首充统计
     "mod_stat",  # 统计数据
+    "mod_hotsales",  # 爆单列表（含历史 uid，必须清空）
+    "mod_goods3",  # 抽奖/活动商品实例（含 uid，必须清空）
 }
 
 # 过滤后只保留指定超管账号
@@ -55,11 +57,9 @@ KEEP_TABLES = {
     "mod_level",  # 等级等系统内置参数（模板基础数据）
     "mod_goods",
     "mod_goods2",
-    "mod_goods3",
     "mod_goods_bat",
     "mod_announcement",
     "mod_app_roll",
-    "mod_hotsales",
 }
 
 CREATE_TABLE_RE = re.compile(r"^CREATE TABLE `([^`]+)`")
