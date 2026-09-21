@@ -14,8 +14,8 @@ networks:
 volumes:
   tenant_runtime:
     name: runtime_{{TENANT_ID}}
-  tenant_mysql:
-    name: mysql_{{TENANT_ID}}
+  # MySQL 数据落在宿主机目录（持久化；docker compose down 不带 -v 不会丢）
+  # 路径: /var/lib/ayang-mysql/{{TENANT_ID}}
 
 x-app-env: &app-env
   TENANT_ID: "{{TENANT_ID}}"
@@ -64,7 +64,8 @@ services:
       MYSQL_USER: "{{DB_USER}}"
       MYSQL_PASSWORD: "{{DB_PASS}}"
     volumes:
-      - tenant_mysql:/var/lib/mysql
+      # 宿主机目录持久化，勿对 compose down 加 -v；备份可直接拷此目录
+      - /var/lib/ayang-mysql/{{TENANT_ID}}:/var/lib/mysql
     networks:
       - tenant_net
     healthcheck:

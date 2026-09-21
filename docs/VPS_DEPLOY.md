@@ -1,42 +1,35 @@
 # 新 VPS 一键部署指南（纯 Docker，无宝塔）
 
-## 全新机器：一条命令（推荐）
+## 完整命令（clone 已在脚本内）
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh | bash
+yum upgrade -y && yum install -y git curl && \
+curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh \
+  | bash -s -- agent01 'Pass888!' 18001
 ```
 
-公开仓库，无需 Token。脚本内顺序：`yum upgrade` → 装 git → clone → `bootstrap.sh`。
+不要再外层写 `git clone`；`bare_vps_install.sh` 会 clone 到 `/opt/ayang-yijian` 再 `bootstrap.sh`。
 
-指定参数：
+## 数据库是否持久？
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh | bash -s -- agent01 'Pass888!' 18001
+**是。** MySQL 挂载到宿主机目录：
+
+```text
+/var/lib/ayang-mysql/agent01  →  容器 /var/lib/mysql
 ```
 
-### 等价分步（必须一口气跑完，勿只 clone）
+代码目录：
 
-```bash
-yum upgrade -y && yum install -y git && \
-git clone -b skysc-bianyi https://github.com/mimaweimahan/ayang-yijian.git /opt/ayang-yijian && \
-cd /opt/ayang-yijian && bash bootstrap.sh
+```text
+/var/www/tenants/agent01  →  容器 /var/www/html
 ```
 
-## 母模已在目录时
+脚本开通时会自动创建上述目录，**不必**再单独做「目录同步库」的额外工具。
+
+注意：`docker compose down -v` 会删命名卷；当前 MySQL 已改为绑定宿主机路径，一般 `down` 不删数据，但删掉 `/var/lib/ayang-mysql/租户` 仍会丢库。
+
+## 再开租户
 
 ```bash
-cd /opt/ayang-yijian && bash bootstrap.sh
-```
-
-再开租户：`./oneclick_tenant.sh agent02 'Pass888!'`
-
-## DNS（可后做）
-
-安全组放行 **22** + **18001+**；域名后配再反代。
-
-## 常用命令
-
-```bash
-./oneclick_tenant.sh agent02 'Pass888!'
-docker compose -f instances/agent01/docker-compose.yml ps
+cd /opt/ayang-yijian && ./oneclick_tenant.sh agent02 'Pass888!'
 ```

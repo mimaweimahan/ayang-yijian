@@ -1,23 +1,21 @@
 #!/usr/bin/env bash
 # =============================================================================
-# bare_vps_install.sh — 裸机一条龙
+# bare_vps_install.sh — 裸机一条龙（clone 已在本脚本内，外层不必再写 git clone）
 #   1) yum upgrade（Debian 则 apt upgrade）
 #   2) 安装 git
-#   3) 拉取/更新母模仓库
+#   3) git clone -b skysc-bianyi → /opt/ayang-yijian
 #   4) bash bootstrap.sh（Docker + 镜像 + 开通租户）
 #
-# 全新机器推荐「一条命令」（公开仓库，curl 直接跑，无需先手动 clone）:
+# 推荐外层命令（upgrade + 装 git/curl 后交给本脚本）:
 #
-#   curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh | bash
+#   yum upgrade -y && yum install -y git curl && \
+#   curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh \
+#     | bash -s -- agent01 'Pass888!' 18001
 #
-# 等价分步（不推荐拆开跑一半）:
-#   yum upgrade -y && yum install -y git && \
-#   git clone -b skysc-bianyi https://github.com/mimaweimahan/ayang-yijian.git /opt/ayang-yijian && \
-#   cd /opt/ayang-yijian && bash bootstrap.sh
+# 或一条管道（本脚本内也会再 upgrade / 装 git / clone）:
 #
-# 已在仓库目录内也可直接:
-#   bash bare_vps_install.sh
-#   bash bare_vps_install.sh agent01 'Pass888!' 18001
+#   curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh \
+#     | bash -s -- agent01 'Pass888!' 18001
 # =============================================================================
 # 若含 CRLF，去 \r 后重入（必须在 set -euo 之前）
 if grep -q $'\r' "$0" 2>/dev/null; then

@@ -2,55 +2,51 @@
 
 纯 Docker 一键开通，**不依赖宝塔**。每租户独立：`mysql` + `app` + `worker` + `cron`。
 
-## 全新机器：一条命令（推荐）
+## 全新机器完整命令
 
-公开仓库，root 执行即可（顺序：upgrade → 装 git → clone → Docker/镜像/开租户）：
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh | bash
-```
-
-指定租户/密码/端口：
+`git clone` **已写在** `bare_vps_install.sh` 里，外层不要再手写 clone。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh | bash -s -- agent01 'Pass888!' 18001
+yum upgrade -y && yum install -y git curl && \
+curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh \
+  | bash -s -- agent01 'Pass888!' 18001
 ```
 
-> 不要只跑到 `git clone` 就停。必须把管道/`bare_vps_install.sh` 跑完。
-
-### 等价分步（须连续执行完）
+双栈建议：
 
 ```bash
-yum upgrade -y && yum install -y git && \
-git clone -b skysc-bianyi https://github.com/mimaweimahan/ayang-yijian.git /opt/ayang-yijian && \
-cd /opt/ayang-yijian && bash bootstrap.sh
+yum upgrade -y && yum install -y git curl && \
+PUBLIC_IP=你的IPv4 curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh \
+  | bash -s -- agent01 'Pass888!' 18001
 ```
 
-说明：clone 之后应直接 `bootstrap.sh`（升级和 git 已在前面做过）。若再跑 `bare_vps_install.sh` 会重复 upgrade，但也能跑通。
+脚本内顺序：upgrade → 装 git → `git clone -b skysc-bianyi` → `/opt/ayang-yijian` → `bootstrap.sh`。
 
-## 仓库里关键文件
+## 数据持久化（不用自己另建 MySQL 同步逻辑）
 
-| 文件 | 作用 |
-|------|------|
-| `bare_vps_install.sh` | **裸机一条龙**（upgrade → git → 拉库 → bootstrap） |
-| `bootstrap.sh` | 装 Docker + 构建镜像 + 开通租户 |
-| `oneclick_tenant.sh` | 仅开通租户 |
-| `install_vps.sh` | 仅初始化 Docker/目录 |
-| `docs/VPS_DEPLOY.md` | 部署说明 |
+| 内容 | 宿主机路径 | 容器内 |
+|------|------------|--------|
+| **MySQL 数据** | `/var/lib/ayang-mysql/{租户}/` | `/var/lib/mysql` |
+| **业务代码** | `/var/www/tenants/{租户}/` | `/var/www/html` |
+| **runtime** | Docker 卷 `runtime_{租户}` | `/var/www/html/runtime` |
 
-## 母模已在磁盘时
+- 容器重启 / `docker compose down`（**不加** `-v`）→ **库不丢**  
+- `docker compose down -v` 或删掉 `/var/lib/ayang-mysql/{租户}` → **库会丢**  
+- 备份：打包 `/var/lib/ayang-mysql/agent01` 即可  
+
+开通脚本会自动 `mkdir -p /var/lib/ayang-mysql/{租户}`，无需手工建目录。
+
+## 再开租户
 
 ```bash
 cd /opt/ayang-yijian
-bash bootstrap.sh
+./oneclick_tenant.sh agent02 'Pass888!'
 ```
-
-再开租户：`./oneclick_tenant.sh agent02 'Pass888!'`
 
 ## 说明
 
-- 超管密码：纯 `md5(明文)`，无盐  
-- 无域名时自动用公网 IP:端口  
+- 超管：纯 `md5(明文)` 无盐；后台入口见开通输出  
+- 无域名用公网 IPv4:端口；域名可后配  
 - 安全组放行 **22** 与 **18001+**
 
 详见 [docs/VPS_DEPLOY.md](docs/VPS_DEPLOY.md)。

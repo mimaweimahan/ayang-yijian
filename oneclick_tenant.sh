@@ -182,7 +182,7 @@ log "纯 Docker 开通 | 租户=$TENANT | 访问=$APP_URL | 端口=$PORT | 库�
 
 # ---------- 1) 代码 ----------
 log "[1/5] 复制母模 => $CODE_DIR"
-mkdir -p "$TENANTS_ROOT" "$INST_DIR"
+mkdir -p "$TENANTS_ROOT" "$INST_DIR" "/var/lib/ayang-mysql/${TENANT}"
 rsync -a \
   --exclude '.git/' --exclude '.env' --exclude 'runtime/' --exclude 'instances/' \
   --exclude 'xinayang_*.sql*' --exclude 'base_template.sql' --exclude '*.tar.gz' \
