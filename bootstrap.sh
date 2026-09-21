@@ -19,10 +19,18 @@
 #   PUBLIC_IP=x.x.x.x            探测失败时手动指定
 #   SKIP_DOCKER=1                已装 Docker 时跳过安装
 # =============================================================================
+# 若含 CRLF，去 \r 后重入（必须在 set -euo 之前）
+if grep -q $'\r' "$0" 2>/dev/null; then
+  _t="$(mktemp)"
+  tr -d '\r' < "$0" > "$_t"
+  chmod +x "$_t"
+  exec bash "$_t" "$@"
+fi
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
+sed -i 's/\r$//' "$ROOT/bootstrap.sh" "$ROOT/oneclick_tenant.sh" "$ROOT/install_vps.sh" 2>/dev/null || true
 
 C_RED=$'\033[1;31m'; C_GRN=$'\033[1;32m'; C_YLW=$'\033[1;33m'
 C_CYN=$'\033[1;36m'; C_BLD=$'\033[1m'; C_RST=$'\033[0m'

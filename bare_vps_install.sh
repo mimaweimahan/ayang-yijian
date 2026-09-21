@@ -6,16 +6,26 @@
 #   3) 拉取/更新母模仓库
 #   4) bash bootstrap.sh（Docker + 镜像 + 开通租户）
 #
-# 全新机器推荐「一条命令」（公开仓库，无需 Token）:
+# 全新机器推荐「一条命令」（公开仓库，curl 直接跑，无需先手动 clone）:
 #
+#   curl -fsSL https://raw.githubusercontent.com/mimaweimahan/ayang-yijian/skysc-bianyi/bare_vps_install.sh | bash
+#
+# 等价分步（不推荐拆开跑一半）:
 #   yum upgrade -y && yum install -y git && \
 #   git clone -b skysc-bianyi https://github.com/mimaweimahan/ayang-yijian.git /opt/ayang-yijian && \
-#   cd /opt/ayang-yijian && bash bare_vps_install.sh
+#   cd /opt/ayang-yijian && bash bootstrap.sh
 #
 # 已在仓库目录内也可直接:
 #   bash bare_vps_install.sh
 #   bash bare_vps_install.sh agent01 'Pass888!' 18001
 # =============================================================================
+# 若含 CRLF，去 \r 后重入（必须在 set -euo 之前）
+if grep -q $'\r' "$0" 2>/dev/null; then
+  _t="$(mktemp)"
+  tr -d '\r' < "$0" > "$_t"
+  chmod +x "$_t"
+  exec bash "$_t" "$@"
+fi
 set -euo pipefail
 
 C_RED=$'\033[1;31m'; C_GRN=$'\033[1;32m'; C_YLW=$'\033[1;33m'
@@ -125,8 +135,11 @@ ok "代码就绪"
 # ---------- 4) bootstrap ----------
 log "[4/4] 执行 bootstrap.sh ..."
 cd "$INSTALL_DIR"
+# 防止 Windows/CRLF 导致 set -o pipefail 立刻失败
+sed -i 's/\r$//' bootstrap.sh oneclick_tenant.sh install_vps.sh bare_vps_install.sh docker/scripts/*.sh 2>/dev/null || true
 chmod +x bootstrap.sh oneclick_tenant.sh install_vps.sh bare_vps_install.sh 2>/dev/null || true
 [[ -f ./bootstrap.sh ]] || die "缺少 bootstrap.sh"
+bash -n ./bootstrap.sh || die "bootstrap.sh 语法错误（请检查是否 CRLF）"
 
 BOOT_ARGS=("$TENANT" "$ADMIN_PASS")
 [[ -n "$PORT_ARG" ]] && BOOT_ARGS+=("$PORT_ARG")

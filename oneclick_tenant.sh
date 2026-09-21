@@ -11,6 +11,12 @@
 #
 # 超管密码算法: 纯 md5($pass)，无盐（见 app/common/model/Admin.php）
 # =============================================================================
+if grep -q $'\r' "$0" 2>/dev/null; then
+  _t="$(mktemp)"
+  tr -d '\r' < "$0" > "$_t"
+  chmod +x "$_t"
+  exec bash "$_t" "$@"
+fi
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
